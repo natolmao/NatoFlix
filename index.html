@@ -3,24 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to AusMail</title>
+    <title>NFlix</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
         }
-        header {
-            font-size: 2em;
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
             margin-bottom: 20px;
         }
-        p {
-            font-size: 1.2em;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        iframe {
+            margin-top: 20px;
+            width: 80%;
+            height: 450px;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <header>Welcome to AusMail</header>
-    <p>Your new website is up and running!</p>
+    <div class="container">
+        <h1>Movie Player</h1>
+        <input type="text" id="movieName" placeholder="Enter movie name">
+        <button onclick="loadMovie()">Play Movie</button>
+        <div id="videoContainer"></div>
+    </div>
+    <script>
+        async function loadMovie() {
+            const movieName = document.getElementById('movieName').value;
+            if (!movieName) {
+                alert('Please enter a movie name');
+                return;
+            }
+
+            const apiKey = '212011c';
+            const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(movieName)}&apikey=${apiKey}`);
+            const data = await response.json();
+
+            if (data.Response === "True") {
+                const imdbID = data.imdbID;
+                const videoUrl = `https://vidsrc.to/embed/movie/${imdbID}`;
+                document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+            } else {
+                alert('Movie not found');
+            }
+        }
+    </script>
 </body>
 </html>
