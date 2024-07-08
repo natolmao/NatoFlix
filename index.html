@@ -121,7 +121,7 @@
         <div class="logo" onclick="window.location.reload()">NatoFlix</div>
         <div id="searchContainer">
             <div class="filters">
-                <input type="text" id="movieName" placeholder="Enter movie name">
+                <input type="text" id="movieName" placeholder="Search Movies">
                 <select id="genre">
                     <option value="">Genre</option>
                     <option value="Action">Action</option>
@@ -151,7 +151,8 @@
                     <option value="rating">Rating</option>
                 </select>
             </div>
-            <button onclick="searchMovies()">Search</button>
+            <button id="searchButton" onclick="searchMovies()">Search</button>
+	    	<script src="script.js"></script>
             <div class="search-results" id="searchResults">
                 <!-- Search results will be displayed here -->
             </div>
