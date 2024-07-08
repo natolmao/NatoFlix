@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFlix</title>
+    <title>NFlix - Watch Any Movie for Free Online</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +15,7 @@
         }
         .container {
             margin-top: 50px;
+            width: 80%;
             text-align: center;
         }
         input[type="text"] {
@@ -25,10 +26,35 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
+            cursor: pointer;
+        }
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .info {
+            width: 30%;
+            text-align: left;
+        }
+        .info img {
+            width: 100%;
+            height: auto;
+        }
+        .video-container {
+            width: 60%;
+        }
+        .downloads {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            width: 30%;
+        }
+        .downloads button {
+            margin-bottom: 10px;
         }
         iframe {
-            margin-top: 20px;
-            width: 80%;
+            width: 100%;
             height: 450px;
             border: none;
         }
@@ -36,10 +62,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Movie Player</h1>
+        <h1>NFlix</h1>
         <input type="text" id="movieName" placeholder="Enter movie name">
         <button onclick="loadMovie()">Play Movie</button>
-        <div id="videoContainer"></div>
+        <div class="info-container">
+            <div class="info" id="info">
+                <!-- Movie information will be displayed here -->
+            </div>
+            <div class="video-container" id="videoContainer">
+                <!-- Video will be embedded here -->
+            </div>
+            <div class="downloads">
+                <button onclick="downloadMovie('720p')">Download 720p</button>
+                <button onclick="downloadMovie('1080p')">Download 1080p</button>
+            </div>
+        </div>
     </div>
     <script>
         async function loadMovie() {
@@ -56,9 +93,32 @@
             if (data.Response === "True") {
                 const imdbID = data.imdbID;
                 const videoUrl = `https://vidsrc.to/embed/movie/${imdbID}`;
+
+                // Display movie info
+                document.getElementById('info').innerHTML = `
+                    <h2>${data.Title} (${data.Year})</h2>
+                    <img src="${data.Poster}" alt="${data.Title} Poster">
+                    <p>${data.Plot}</p>
+                `;
+
+                // Embed the video
                 document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+
+                // Set download links
+                document.querySelector('.downloads').style.display = 'block';
+                document.querySelector('.downloads').dataset.imdbid = imdbID;
             } else {
                 alert('Movie not found');
+            }
+        }
+
+        function downloadMovie(quality) {
+            const imdbID = document.querySelector('.downloads').dataset.imdbid;
+            if (imdbID) {
+                const downloadUrl = `https://vidsrc.to/download/movie/${imdbID}/${quality}`;
+                window.open(downloadUrl, '_blank');
+            } else {
+                alert('No movie loaded');
             }
         }
     </script>
