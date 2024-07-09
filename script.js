@@ -1,5 +1,5 @@
 let currentPage = 1;
-const moviesPerPage = 30;
+const moviesPerPage = 10;
 
 async function searchMovies(page = 1) {
     currentPage = page;
@@ -61,9 +61,21 @@ function displayPagination(totalPages) {
         pagination.appendChild(createPageButton('Previous', currentPage - 1));
     }
 
-    for (let i = 1; i <= totalPages; i++) {
+    pagination.appendChild(createPageButton(1, 1));
+
+    if (currentPage > 3) {
+        pagination.appendChild(document.createTextNode('...'));
+    }
+
+    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
         pagination.appendChild(createPageButton(i, i));
     }
+
+    if (currentPage < totalPages - 2) {
+        pagination.appendChild(document.createTextNode('...'));
+    }
+
+    pagination.appendChild(createPageButton(totalPages, totalPages));
 
     if (currentPage < totalPages) {
         pagination.appendChild(createPageButton('Next', currentPage + 1));
