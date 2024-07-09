@@ -208,8 +208,7 @@
                     const movieElement = document.createElement('img');
                     movieElement.src = poster;
                     movieElement.alt = movie.Title;
-                    movieElement.setAttribute('data-imdbid', movie.imdbID); // Set imdbID as data attribute
-                    movieElement.classList.add('movie-poster'); // Added class for styling
+                    movieElement.onclick = () => loadMovie(movie.imdbID);
                     searchResults.appendChild(movieElement);
                 });
             } else {
@@ -247,19 +246,12 @@
             }
         }
 
-        // Function to show search container and hide info container
         function showSearch() {
+            // Show the search container and hide the info container
             document.getElementById('searchContainer').style.display = 'block';
             document.getElementById('infoContainer').style.display = 'none';
         }
-
-        // Event delegation for dynamically added movie posters
-        document.addEventListener('click', function(event) {
-            if (event.target.matches('.movie-poster')) {
-                const imdbID = event.target.getAttribute('data-imdbid');
-                loadMovie(imdbID);
-            }
-        });
     </script>
 </body>
 </html>
+
