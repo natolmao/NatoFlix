@@ -72,9 +72,39 @@ async function searchMovies(page = 1) {
     document.getElementById('sort').blur();
 }
 
-function moveSearchContainer() {
-    const searchContainer = document.querySelector('.search-container');
-    searchContainer.style.marginBottom = '20px'; // Adjust as needed
+async function loadMovie(imdbID) {
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
+    const data = await response.json();
+
+    if (data.Response === "True") {
+        const videoUrl = `https://vidsrc.to/embed/movie/${imdbID}`;
+
+        // Display movie info
+        const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
+        document.getElementById('info').innerHTML = `
+            <h2>${data.Title} (${data.Year})</h2>
+            <div class="rating">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
+                <span>${tomatoRating}</span>
+            </div>
+            <p>${data.Plot}</p>
+        `;
+
+        // Embed the video
+        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+
+        // Hide the search container and show the info container
+        document.getElementById('searchContainer').style.display = 'none';
+        document.getElementById('infoContainer').style.display = 'flex';
+    } else {
+        alert('Movie not found');
+    }
+}
+
+function showSearch() {
+    // Show the search container and hide the info container
+    document.getElementById('searchContainer').style.display = 'block';
+    document.getElementById('infoContainer').style.display = 'none';
 }
 
 function displayPagination(totalPages) {
