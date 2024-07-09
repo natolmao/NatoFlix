@@ -45,11 +45,6 @@ async function searchMovies(page = 1) {
     document.getElementById('sort').blur();
 }
 
-function moveSearchContainer() {
-    const searchContainer = document.querySelector('.search-container');
-    searchContainer.style.marginBottom = '20px'; // Adjust as needed
-}
-
 function displayPagination(totalPages) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
