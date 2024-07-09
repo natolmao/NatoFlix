@@ -41,6 +41,7 @@ const inputFields = document.querySelectorAll('#movieName, #genre, #year, #sort'
 inputFields.forEach(field => {
     field.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default form submission
             searchMovies();
         }
     });
