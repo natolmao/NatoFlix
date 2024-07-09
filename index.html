@@ -212,7 +212,7 @@
     <div class="container">
         <div class="logo" onclick="showHomepage()">NATEFLIX</div>
         <div class="search-container">
-            <input type="text" id="movieName" placeholder="Search Movies" onkeydown="if (event.keyCode === 13) searchMovies()">
+            <input type="text" id="movieName" placeholder="Search Keywords" onkeydown="if (event.keyCode === 13) searchMovies()">
             <button id="searchButton" onclick="searchMovies()">🔍</button>
         </div>
         <div id="searchContainer">
@@ -315,6 +315,43 @@
                 document.getElementById('infoContainer').style.display = 'flex';
             } else {
                 alert('Movie not found');
+            }
+        }
+
+        async function displayPagination(totalPages, currentPage) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const createPageButton = (text, page) => {
+                const button = document.createElement('button');
+                button.textContent = text;
+                button.disabled = page === currentPage;
+                button.onclick = () => searchMovies(page);
+                return button;
+            };
+
+            if (currentPage > 1) {
+                pagination.appendChild(createPageButton('Previous', currentPage - 1));
+            }
+
+            pagination.appendChild(createPageButton(1, 1));
+
+            if (currentPage > 3) {
+                pagination.appendChild(document.createTextNode('...'));
+            }
+
+            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
+                pagination.appendChild(createPageButton(i, i));
+            }
+
+            if (currentPage < totalPages - 2) {
+                pagination.appendChild(document.createTextNode('...'));
+            }
+
+            pagination.appendChild(createPageButton(totalPages, totalPages));
+
+            if (currentPage < totalPages) {
+                pagination.appendChild(createPageButton('Next', currentPage + 1));
             }
         }
 
