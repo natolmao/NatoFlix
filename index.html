@@ -136,7 +136,6 @@
         <div id="searchContainer">
             <div class="filters">
                 <input type="text" id="movieName" placeholder="Search Movies">
-                <script src="script.js"></script>
                 <select id="genre">
                     <option value="">Genre</option>
                     <option value="Action">Action</option>
@@ -149,6 +148,7 @@
                 <select id="year">
                     <option value="">Year</option>
                     <!-- Generate year options dynamically -->
+                    <script src="script.js"></script>
                     <script>
                         const yearSelect = document.getElementById('year');
                         const currentYear = new Date().getFullYear();
@@ -165,7 +165,6 @@
                     <option value="latest">Latest</option>
                     <option value="rating">Rating</option>
                 </select>
-            <script src="script.js">
             </div>
             <button id="searchButton" onclick="searchMovies()">Search</button>
             <div class="search-results" id="searchResults">
@@ -174,7 +173,7 @@
             <div class="pagination" id="pagination">
                 <!-- Pagination controls will be displayed here -->
             </div>
-            </script>
+            <script src="script.js"></script>
         </div>
         <div class="info-container" id="infoContainer">
             <div class="video-container" id="videoContainer">
