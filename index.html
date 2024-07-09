@@ -135,8 +135,9 @@
         <div class="logo" onclick="window.location.reload()">NATEFLIX</div>
         <div id="searchContainer">
             <div class="filters">
+                <script src="script.js">
                 <input type="text" id="movieName" placeholder="Search Movies">
-                <script src="script.js"></script>
+                </script>
                 <select id="genre">
                     <option value="">Genre</option>
                     <option value="Action">Action</option>
@@ -165,6 +166,7 @@
                     <option value="latest">Latest</option>
                     <option value="rating">Rating</option>
                 </select>
+            <script src="script.js">
             </div>
             <button id="searchButton" onclick="searchMovies()">Search</button>
             <div class="search-results" id="searchResults">
@@ -173,7 +175,7 @@
             <div class="pagination" id="pagination">
                 <!-- Pagination controls will be displayed here -->
             </div>
-            <script src="script.js"></script>
+            </script>
         </div>
         <div class="info-container" id="infoContainer">
             <div class="video-container" id="videoContainer">
