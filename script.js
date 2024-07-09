@@ -1,4 +1,8 @@
-async function searchMovies() {
+let currentPage = 1;
+const moviesPerPage = 30;
+
+async function searchMovies(page = 1) {
+    currentPage = page;
     const movieName = document.getElementById('movieName').value;
     const genre = document.getElementById('genre').value;
     const year = document.getElementById('year').value;
@@ -9,6 +13,7 @@ async function searchMovies() {
     if (genre) query += `&genre=${encodeURIComponent(genre)}`;
     if (year) query += `&y=${year}`;
     if (sort) query += `&sort=${sort}`;
+    query += `&page=${page}`;
 
     const apiKey = '212011c';
     const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
@@ -25,6 +30,10 @@ async function searchMovies() {
             movieElement.onclick = () => loadMovie(movie.imdbID);
             searchResults.appendChild(movieElement);
         });
+
+        const totalResults = parseInt(data.totalResults, 10);
+        const totalPages = Math.ceil(totalResults / moviesPerPage);
+        displayPagination(totalPages);
     } else {
         alert('No movies found');
     }
@@ -34,6 +43,31 @@ async function searchMovies() {
     document.getElementById('genre').blur();
     document.getElementById('year').blur();
     document.getElementById('sort').blur();
+}
+
+function displayPagination(totalPages) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const createPageButton = (text, page) => {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.disabled = page === currentPage;
+        button.onclick = () => searchMovies(page);
+        return button;
+    };
+
+    if (currentPage > 1) {
+        pagination.appendChild(createPageButton('Previous', currentPage - 1));
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        pagination.appendChild(createPageButton(i, i));
+    }
+
+    if (currentPage < totalPages) {
+        pagination.appendChild(createPageButton('Next', currentPage + 1));
+    }
 }
 
 // Add an event listener to the input fields to listen for the Enter key
