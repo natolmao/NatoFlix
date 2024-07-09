@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nateflix</title>
+    <title>NatoFlix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         
@@ -177,7 +177,6 @@
         <div class="search-container">
             <input type="text" id="movieName" placeholder="Search Movies">
             <button id="searchButton" onclick="searchMovies()">🔍</button>
-            <script src="script.js"></script>
         </div>
         <div id="searchContainer">
             <div class="search-results" id="searchResults">
@@ -187,7 +186,6 @@
                 <!-- Pagination controls will be displayed here -->
             </div>
         </div>
-        <script src="script.js"></script>
         <div class="info-container" id="infoContainer">
             <div class="video-container" id="videoContainer">
                 <!-- Video will be embedded here -->
@@ -205,8 +203,8 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
-    <script src="script.js">
+
+    <script>
         async function searchMovies() {
             const movieName = document.getElementById('movieName').value;
             let query = '';
