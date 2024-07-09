@@ -1,49 +1,17 @@
-let currentPage = 1;
-const moviesPerPage = 10;
-const apiKey = '212011c';
-
-document.addEventListener('DOMContentLoaded', function() {
-    populateYearOptions();
-    document.getElementById('searchButton').addEventListener('click', () => searchMovies());
-
-    // Add an event listener to the input fields to listen for the Enter key
-    const inputFields = document.querySelectorAll('#movieName, #genre, #year, #sort');
-    inputFields.forEach(field => {
-        field.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
-                searchMovies();
-            }
-        });
-    });
+document.getElementById('movieName').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        searchMovies();
+    }
 });
 
-function populateYearOptions() {
-    const yearSelect = document.getElementById('year');
-    const currentYear = new Date().getFullYear();
-    for (let year = currentYear; year >= 1900; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-    }
-}
-
 async function searchMovies(page = 1) {
-    currentPage = page;
     const movieName = document.getElementById('movieName').value;
-    const genre = document.getElementById('genre').value;
-    const year = document.getElementById('year').value;
-    const sort = document.getElementById('sort').value;
     let query = '';
 
     if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
-    if (genre) query += `&genre=${encodeURIComponent(genre)}`;
-    if (year) query += `&y=${year}`;
-    if (sort) query += `&sort=${sort}`;
-    query += `&page=${page}`;
 
-    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
+    const apiKey = '212011c';
+    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}&page=${page}`);
     const data = await response.json();
 
     if (data.Response === "True") {
@@ -51,33 +19,66 @@ async function searchMovies(page = 1) {
         searchResults.innerHTML = '';
         data.Search.forEach(movie => {
             const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
-            const movieElement = document.createElement('img');
-            movieElement.src = poster;
-            movieElement.alt = movie.Title;
-            movieElement.onclick = () => loadMovie(movie.imdbID);
+            const movieElement = document.createElement('div');
+            movieElement.classList.add('movie-item');
+            movieElement.innerHTML = `
+                <img src="${poster}" alt="${movie.Title}" onclick="loadMovie('${movie.imdbID}')">
+                <div class="movie-title">${movie.Title}</div>
+            `;
             searchResults.appendChild(movieElement);
         });
 
-        const totalResults = parseInt(data.totalResults, 10);
-        const totalPages = Math.ceil(totalResults / moviesPerPage);
-        displayPagination(totalPages);
+        updatePagination(data.totalResults, page);
     } else {
         alert('No movies found');
     }
+}
 
-    // Unfocus the input fields
-    document.getElementById('movieName').blur();
-    document.getElementById('genre').blur();
-    document.getElementById('year').blur();
-    document.getElementById('sort').blur();
+function updatePagination(totalResults, page) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(totalResults / 9);
+    const currentPage = page;
+
+    if (currentPage > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.onclick = () => searchMovies(currentPage - 1);
+        pagination.appendChild(prevButton);
+    }
+
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = i;
+        pageButton.onclick = () => searchMovies(i);
+        if (i === currentPage) {
+            pageButton.disabled = true;
+        }
+        pagination.appendChild(pageButton);
+    }
+
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.onclick = () => searchMovies(currentPage + 1);
+        pagination.appendChild(nextButton);
+    }
 }
 
 async function loadMovie(imdbID) {
+    const apiKey = '212011c';
     const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
 
     if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.to/embed/movie/${imdbID}`;
+        let videoUrl;
+        if (data.Type === 'movie') {
+            videoUrl = `https://vidsrc.net/embed/${imdbID}`;
+        } else if (data.Type === 'series') {
+            videoUrl = `https://vidsrc.net/embed/${imdbID}/1-1`; // Default to season 1, episode 1
+            showSeasonEpisodeSelector(data);
+        }
 
         // Display movie info
         const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
@@ -101,45 +102,7 @@ async function loadMovie(imdbID) {
     }
 }
 
-function showSearch() {
-    // Show the search container and hide the info container
-    document.getElementById('searchContainer').style.display = 'block';
-    document.getElementById('infoContainer').style.display = 'none';
-}
-
-function displayPagination(totalPages) {
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
-
-    const createPageButton = (text, page) => {
-        const button = document.createElement('button');
-        button.textContent = text;
-        button.disabled = page === currentPage;
-        button.onclick = () => searchMovies(page);
-        return button;
-    };
-
-    if (currentPage > 1) {
-        pagination.appendChild(createPageButton('Previous', currentPage - 1));
-    }
-
-    pagination.appendChild(createPageButton(1, 1));
-
-    if (currentPage > 3) {
-        pagination.appendChild(document.createTextNode('...'));
-    }
-
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
-        pagination.appendChild(createPageButton(i, i));
-    }
-
-    if (currentPage < totalPages - 2) {
-        pagination.appendChild(document.createTextNode('...'));
-    }
-
-    pagination.appendChild(createPageButton(totalPages, totalPages));
-
-    if (currentPage < totalPages) {
-        pagination.appendChild(createPageButton('Next', currentPage + 1));
-    }
+function showSeasonEpisodeSelector(seriesData) {
+    // Implementation to show season and episode selector
+    // This should dynamically create dropdowns and lists for season and episode selection
 }
