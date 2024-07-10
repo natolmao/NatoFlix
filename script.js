@@ -82,6 +82,11 @@ async function loadSeasons(imdbID) {
             seasonSelect.appendChild(option);
         }
         loadEpisodes(imdbID, 1);
+
+        seasonSelect.onchange = () => {
+            const selectedSeason = seasonSelect.value;
+            loadEpisodes(imdbID, selectedSeason);
+        };
     }
 }
 
@@ -102,13 +107,18 @@ async function loadEpisodes(imdbID, season) {
 
         // Load the first episode by default
         loadEpisode(imdbID, season, data.Episodes[0].Episode);
+
+        episodeSelect.onchange = () => {
+            const selectedEpisode = episodeSelect.value;
+            loadEpisode(imdbID, season, selectedEpisode);
+        };
     }
 }
 
 function loadEpisode(imdbID, season, episode) {
     const videoUrl = `https://vidsrc.net/embed/${imdbID}/${season}-${episode}`;
     document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
-    const showTitle = document.getElementById('info').querySelector('h2').textContent;
+    const showTitle = document.getElementById('info').querySelector('h2').textContent.split(' - ')[0];
     const episodeTitle = `SE ${season} - EP ${episode}`;
     document.getElementById('info').querySelector('h2').textContent = `${showTitle} - ${episodeTitle}`;
 }
