@@ -236,12 +236,11 @@
                     const movieElement = document.createElement('div');
                     movieElement.className = 'movie-item';
                     movieElement.innerHTML = `
-                        <img src="${poster}" alt="${movie.Title}">
-                        <div class="movie-title">${movie.Title}</div>
-                    `;
-                    movieElement.onclick = () => loadMovie(movie.imdbID, movie.Type);
-                    searchResults.appendChild(movieElement);
-                });
+                       <img src="${poster}" alt="${movie.Title}" onclick="loadMovie('${movie.imdbID}')">
+                       <div class="movie-title">${movie.Title}</div>
+            `;
+            searchResults.appendChild(movieElement);
+        });
 
                 const totalResults = parseInt(data.totalResults);
                 const totalPages = Math.ceil(totalResults / 10);
