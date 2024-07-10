@@ -236,7 +236,7 @@
             const movieElement = document.createElement('div');
             movieElement.className = 'movie-item';
             movieElement.innerHTML = `
-               <img src="${poster}" alt="${movie.Title}" onclick="loadMovie('${movie.imdbID}', '${movie.Type}')">
+               <img src="${poster}" alt="${movie.Title}" onclick="loadMovie(imdbID, type)">
                <div class="movie-title">${movie.Title}</div>
             `;
             searchResults.appendChild(movieElement);
