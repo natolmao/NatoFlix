@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nateflix</title>
+    <title>NatoFlix</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
@@ -54,10 +54,6 @@
             border: none;
             border-radius: 4px;
             margin-left: 10px;
-        }
-        .search-button img {
-            width: 20px;
-            height: 20px;
         }
         .search-button:hover {
             background-color: #f40612;
@@ -160,12 +156,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo" onclick="window.location.reload()">NATEFLIX</div>
+        <div class="logo" onclick="window.location.reload()">NatoFlix</div>
         <div id="searchContainer">
             <div class="search-container">
                 <input type="text" id="movieName" placeholder="Search Movies">
                 <button id="searchButton" class="search-button" onclick="searchMovies()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/1024px-Magnifying_glass_icon.svg.png" alt="search">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/1024px-Magnifying_glass_icon.svg.png" alt="search" style="width: 20px; height: 20px;">
                 </button>
             </div>
             <div class="search-results" id="searchResults">
@@ -241,7 +237,7 @@
             if (data.Response === "True") {
                 let videoUrl = type === 'series' ? `https://vidsrc.net/embed/${imdbID}/` : `https://vidsrc.net/embed/${imdbID}/`;
                 document.getElementById('info').innerHTML = `
-                    <h2>${data.Title}</h2>
+                    <h2>${data.Title} (${data.Year})</h2>
                     <div class="rating">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
                         <span>${data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
@@ -255,4 +251,4 @@
                     document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
                 }
 
-                document.getElementById('searchContainer').style.display
+                document.getElementById('searchContainer').style
