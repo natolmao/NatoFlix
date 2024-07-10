@@ -1,68 +1,37 @@
-document.getElementById('movieName').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        searchMovies();
-    }
-});
-
-async function searchMovies(page = 1) {
-    const movieName = document.getElementById('movieName').value;
-    let query = '';
-
-    if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
-
+async function searchMovies() {
+    const movieName = document.getElementById('movieName').value.trim();
     const apiKey = '212011c';
-    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}&page=${page}`);
+    let query = `&apikey=${apiKey}`;
+
+    if (movieName) {
+        query += `&s=${encodeURIComponent(movieName)}`;
+    }
+
+    const response = await fetch(`https://www.omdbapi.com/?${query}`);
     const data = await response.json();
 
     if (data.Response === "True") {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
+
         data.Search.forEach(movie => {
             const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
             const movieElement = document.createElement('div');
-            movieElement.classList.add('movie-item');
+            movieElement.classList.add('movie');
             movieElement.innerHTML = `
-                <img src="${poster}" alt="${movie.Title}" onclick="loadMovie('${movie.imdbID}')">
-                <div class="movie-title">${movie.Title}</div>
+                <img src="${poster}" alt="${movie.Title}" data-imdbid="${movie.imdbID}">
+                <p class="movie-title">${movie.Title}</p>
             `;
+            movieElement.addEventListener('click', () => loadMovie(movie.imdbID));
             searchResults.appendChild(movieElement);
         });
 
-        updatePagination(data.totalResults, page);
+        // Display pagination if more than one page
+        if (data.totalResults > 10) {
+            displayPagination(data.totalResults);
+        }
     } else {
         alert('No movies found');
-    }
-}
-
-function updatePagination(totalResults, page) {
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
-
-    const totalPages = Math.ceil(totalResults / 9);
-    const currentPage = page;
-
-    if (currentPage > 1) {
-        const prevButton = document.createElement('button');
-        prevButton.textContent = 'Previous';
-        prevButton.onclick = () => searchMovies(currentPage - 1);
-        pagination.appendChild(prevButton);
-    }
-
-    for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement('button');
-        pageButton.textContent = i;
-        pageButton.onclick = () => searchMovies(i);
-        if (i === currentPage) {
-            pageButton.disabled = true;
-        }
-        pagination.appendChild(pageButton);
-    }
-
-    if (currentPage < totalPages) {
-        const nextButton = document.createElement('button');
-        nextButton.textContent = 'Next';
-        nextButton.onclick = () => searchMovies(currentPage + 1);
-        pagination.appendChild(nextButton);
     }
 }
 
@@ -72,18 +41,17 @@ async function loadMovie(imdbID) {
     const data = await response.json();
 
     if (data.Response === "True") {
-        let videoUrl;
-        if (data.Type === 'movie') {
-            videoUrl = `https://vidsrc.net/embed/${imdbID}`;
-        } else if (data.Type === 'series') {
-            videoUrl = `https://vidsrc.net/embed/${imdbID}/1-1`; // Default to season 1, episode 1
-            showSeasonEpisodeSelector(data);
-        }
+        const videoUrl = data.Type === 'movie' ?
+            `https://vidsrc.net/embed/${imdbID}/` :
+            `https://vidsrc.net/embed/${imdbID}/1-1/`;
 
-        // Display movie info
+        const title = data.Type === 'movie' ? `${data.Title} (${data.Year})` :
+            `${data.Title} - SE 1 - EP 1`;
+
         const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
+
         document.getElementById('info').innerHTML = `
-            <h2>${data.Title} (${data.Year})</h2>
+            <h2>${title}</h2>
             <div class="rating">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
                 <span>${tomatoRating}</span>
@@ -91,10 +59,10 @@ async function loadMovie(imdbID) {
             <p>${data.Plot}</p>
         `;
 
-        // Embed the video
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+        document.getElementById('videoContainer').innerHTML = `
+            <iframe src="${videoUrl}" allowfullscreen></iframe>
+        `;
 
-        // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
     } else {
@@ -102,7 +70,47 @@ async function loadMovie(imdbID) {
     }
 }
 
-function showSeasonEpisodeSelector(seriesData) {
-    // Implementation to show season and episode selector
-    // This should dynamically create dropdowns and lists for season and episode selection
+function displayPagination(totalResults) {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(totalResults / 10); // Assuming 10 results per page
+    const currentPage = 1;
+
+    const prevButton = createPaginationButton('Previous', currentPage - 1);
+    pagination.appendChild(prevButton);
+
+    const firstPageButton = createPaginationButton('1', 1);
+    pagination.appendChild(firstPageButton);
+
+    const nextButton = createPaginationButton('Next', currentPage + 1);
+    pagination.appendChild(nextButton);
+
+    const lastPageButton = createPaginationButton(`${totalPages}`, totalPages);
+    pagination.appendChild(lastPageButton);
 }
+
+function createPaginationButton(text, page) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.addEventListener('click', () => goToPage(page));
+    return button;
+}
+
+function goToPage(page) {
+    // Implement logic to fetch movies for the specified page
+    // This function should call searchMovies or modify search query accordingly
+}
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', () => {
+    const searchButton = document.getElementById('searchButton');
+    searchButton.addEventListener('click', searchMovies);
+
+    const searchBar = document.getElementById('movieName');
+    searchBar.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchMovies();
+        }
+    });
+});
