@@ -1,33 +1,34 @@
-// Base code with sample data
-const movies = [
-    { title: "Young Sheldon", year: 2017, poster: "https://via.placeholder.com/200x300?text=Young+Sheldon" },
-    { title: "Other Movie", year: 2020, poster: "https://via.placeholder.com/200x300?text=Other+Movie" },
-    // Add more movie objects as needed
-];
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search");
+    const movieList = document.getElementById("movieList");
 
-function displayMovies(movieList) {
-    const contentDiv = document.getElementById('content');
-    contentDiv.innerHTML = ''; // Clear previous content
+    const movies = [
+        { title: "Movie 1", image: "path/to/image1.jpg" },
+        { title: "Movie 2", image: "path/to/image2.jpg" },
+        { title: "Movie 3", image: "path/to/image3.jpg" }
+        // Add more movie objects here
+    ];
 
-    movieList.forEach(movie => {
-        const movieItem = document.createElement('div');
-        movieItem.className = 'movie-item';
+    function displayMovies(movies) {
+        movieList.innerHTML = "";
+        movies.forEach(movie => {
+            const movieItem = document.createElement("div");
+            movieItem.className = "movie-item";
+            movieItem.innerHTML = `
+                <img src="${movie.image}" alt="${movie.title}">
+                <h3>${movie.title}</h3>
+            `;
+            movieList.appendChild(movieItem);
+        });
+    }
 
-        movieItem.innerHTML = `
-            <img src="${movie.poster}" alt="${movie.title}">
-            <h3>${movie.title}</h3>
-            <p>${movie.year}</p>
-        `;
-
-        contentDiv.appendChild(movieItem);
+    searchInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            const query = searchInput.value.toLowerCase();
+            const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(query));
+            displayMovies(filteredMovies);
+        }
     });
-}
 
-document.getElementById('search-bar').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
-    displayMovies(filteredMovies);
+    displayMovies(movies); // Display all movies by default
 });
-
-// Display all movies on initial load
-displayMovies(movies);
