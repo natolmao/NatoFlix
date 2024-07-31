@@ -8,12 +8,16 @@
 </head>
 <body>
     <header>
-        <h1>Nateflix</h1>
-        <input type="text" id="search-bar" placeholder="Search for movies or series...">
+        <div class="logo">
+            <h1>Nateflix</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search for movies or TV series...">
+        </div>
     </header>
     <main>
-        <div id="content">
-            <!-- Movie/Series items will be dynamically inserted here -->
+        <div class="movie-list" id="movieList">
+            <!-- Movie items will be appended here by JavaScript -->
         </div>
     </main>
     <script src="script.js"></script>
