@@ -1,45 +1,55 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #141414;
-    color: #ffffff;
     margin: 0;
     padding: 0;
+    background-color: #141414;
+    color: #ffffff;
 }
 
+/* Header Styles */
 header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: #222222;
+    background-color: #1c1c1c;
 }
 
-header h1 {
+.logo h1 {
     margin: 0;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
-#search-bar {
-    margin-left: 20px;
+.search-container {
+    position: relative;
+    width: 300px;
+}
+
+.search-container input {
+    width: 100%;
     padding: 10px;
-    width: 50%;
     border: none;
     border-radius: 5px;
 }
 
-#content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+/* Main Content Styles */
+main {
     padding: 20px;
 }
 
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
 .movie-item {
-    width: 200px;
-    margin: 15px;
-    background-color: #333333;
-    border-radius: 10px;
+    background-color: #333;
+    border-radius: 5px;
     overflow: hidden;
+    width: 200px;
+    text-align: center;
 }
 
 .movie-item img {
@@ -48,12 +58,7 @@ header h1 {
 }
 
 .movie-item h3 {
-    text-align: center;
-    padding: 10px;
-    font-size: 1.2em;
-}
-
-.movie-item p {
-    text-align: center;
-    padding: 0 10px 10px 10px;
+    margin: 10px 0;
+    font-size: 1em;
+    color: #ffffff;
 }
