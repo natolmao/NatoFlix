@@ -10,19 +10,13 @@ body {
 /* Header Styles */
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 20px;
     background-color: #1c1c1c;
 }
 
-.logo h1 {
-    margin: 0;
-    font-size: 1.5em;
-}
-
 .search-container {
-    position: relative;
     width: 300px;
 }
 
@@ -52,7 +46,7 @@ main {
     width: 200px;
     text-align: center;
     margin-bottom: 20px; /* Add some space below each movie item */
-    cursor: pointer; /* Make it clear that the item is clickable */
+    cursor: pointer; /* Add pointer cursor for clickable items */
 }
 
 .movie-item img {
