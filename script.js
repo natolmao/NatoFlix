@@ -39,92 +39,72 @@ async function searchMovies(page = 1) {
 }
 
 async function loadMovie(imdbID, type) {
-    console.log(`Loading movie with ID: ${imdbID}`); // Debugging line
-    const apiKey = '212011c';
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
-    const data = await response.json();
+            const apiKey = '212011c';
+            const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey});
+            const data = await response.json();
 
-    if (data.Response === "True") {
-        const videoUrl = type === 'series' ? `https://vidsrc.net/embed/${imdbID}/1-1` : `https://vidsrc.net/embed/${imdbID}`;
-        document.getElementById('info').innerHTML = `
-            <h2>${data.Title}</h2>
-            <div class="rating">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
-                <span>${data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
-            </div>
-            <p>${data.Plot}</p>
-        `;
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+            if (data.Response === "True") {
+                let videoUrl = type === 'series' ? https://vidsrc.net/embed/${imdbID}/ : https://vidsrc.net/embed/${imdbID}/;
+                document.getElementById('info').innerHTML = 
+                    <h2>${data.Title}</h2>
+                    <div class="rating">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
+                        <span>${data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
+                    </div>
+                    <p>${data.Plot}</p>
+                ;
+                document.getElementById('videoContainer').innerHTML = <iframe src="${videoUrl}" allowfullscreen></iframe>;
+                
+                if (type === 'series') {
+                    loadSeasons(imdbID);
+                    document.getElementById('seasonSelect').style.display = 'block';
+                    document.getElementById('episodeSelect').style.display = 'block';
+                } else {
+                    document.getElementById('seasonSelect').style.display = 'none';
+                    document.getElementById('episodeSelect').style.display = 'none';
+                }
 
-        if (type === 'series') {
-            loadSeasons(imdbID);
-            document.getElementById('seasonSelect').style.display = 'block';
-            document.getElementById('episodeSelect').style.display = 'block';
-        } else {
-            document.getElementById('seasonSelect').style.display = 'none';
-            document.getElementById('episodeSelect').style.display = 'none';
+                document.getElementById('searchContainer').style.display = 'none';
+                document.getElementById('infoContainer').style.display = 'flex';
+            }
         }
 
-        document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('infoContainer').style.display = 'flex';
-    }
-}
+        async function loadSeasons(imdbID) {
+            const apiKey = '212011c';
+            const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&type=series);
+            const data = await response.json();
 
-async function loadSeasons(imdbID) {
-    const apiKey = '212011c';
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&type=series`);
-    const data = await response.json();
-
-    if (data.totalSeasons) {
-        const seasonSelect = document.getElementById('seasonSelect');
-        seasonSelect.innerHTML = '';
-        for (let i = 1; i <= data.totalSeasons; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `Season ${i}`;
-            seasonSelect.appendChild(option);
+            if (data.totalSeasons) {
+                const seasonSelect = document.getElementById('seasonSelect');
+                seasonSelect.innerHTML = '';
+                for (let i = 1; i <= data.totalSeasons; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = Season ${i};
+                    seasonSelect.appendChild(option);
+                }
+                loadEpisodes();
+            }
         }
-        loadEpisodes(imdbID, 1);
 
-        seasonSelect.onchange = () => {
-            const selectedSeason = seasonSelect.value;
-            loadEpisodes(imdbID, selectedSeason);
-        };
-    }
-}
+        async function loadEpisodes() {
+            const imdbID = document.getElementById('info').querySelector('h2').textContent;
+            const season = document.getElementById('seasonSelect').value;
+            const apiKey = '212011c';
+            const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&Season=${season});
+            const data = await response.json();
 
-async function loadEpisodes(imdbID, season) {
-    const apiKey = '212011c';
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&Season=${season}`);
-    const data = await response.json();
-
-    if (data.Episodes) {
-        const episodeSelect = document.getElementById('episodeSelect');
-        episodeSelect.innerHTML = '';
-        data.Episodes.forEach(episode => {
-            const option = document.createElement('option');
-            option.value = episode.Episode;
-            option.textContent = `Episode ${episode.Episode}: ${episode.Title}`;
-            episodeSelect.appendChild(option);
-        });
-
-        // Load the first episode by default
-        loadEpisode(imdbID, season, data.Episodes[0].Episode);
-
-        episodeSelect.onchange = () => {
-            const selectedEpisode = episodeSelect.value;
-            loadEpisode(imdbID, season, selectedEpisode);
-        };
-    }
-}
-
-function loadEpisode(imdbID, season, episode) {
-    const videoUrl = `https://vidsrc.net/embed/${imdbID}/${season}-${episode}`;
-    document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
-    const showTitle = document.getElementById('info').querySelector('h2').textContent.split(' - ')[0];
-    const episodeTitle = `SE ${season} - EP ${episode}`;
-    document.getElementById('info').querySelector('h2').textContent = `${showTitle} - ${episodeTitle}`;
-}
+            if (data.Episodes) {
+                const episodeSelect = document.getElementById('episodeSelect');
+                episodeSelect.innerHTML = '';
+                data.Episodes.forEach(episode => {
+                    const option = document.createElement('option');
+                    option.value = episode.Episode;
+                    option.textContent = Episode ${episode.Episode}: ${episode.Title};
+                    episodeSelect.appendChild(option);
+                });
+            }
+        }
 
 function updatePagination(currentPage, totalPages) {
     const pagination = document.getElementById('pagination');
