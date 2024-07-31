@@ -21,7 +21,7 @@ async function searchMovies(page = 1) {
             movieElement.className = 'movie-item';
             movieElement.innerHTML = `
                 <img src="${poster}" alt="${movie.Title}">
-                <div class="movie-title">${movie.Title}</div>
+                <h3>${movie.Title}</h3>
             `;
             movieElement.onclick = () => {
                 console.log(`Clicked on ${movie.Title}`); // Debugging line
@@ -166,18 +166,13 @@ function updatePagination(currentPage, totalPages) {
         addEllipsis();
     }
 
-    pagination.appendChild(createButton(totalPages, totalPages));
+    if (totalPages > 1) {
+        pagination.appendChild(createButton(totalPages, totalPages));
+    }
 
     if (currentPage < totalPages) {
         pagination.appendChild(createButton('Next', currentPage + 1));
     } else {
         pagination.appendChild(createButton('Next', currentPage + 1, true));
     }
-}
-
-function showSearch() {
-    document.getElementById('searchContainer').style.display = 'block';
-    document.getElementById('infoContainer').style.display = 'none';
-    document.getElementById('seasonSelect').style.display = 'none';
-    document.getElementById('episodeSelect').style.display = 'none';
 }
