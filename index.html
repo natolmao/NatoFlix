@@ -8,11 +8,13 @@
 </head>
 <body>
     <header>
-        <input type="text" id="movieName" placeholder="Search for movies...">
+        <div class="search-container">
+            <input type="text" id="movieName" placeholder="Search for movies...">
+        </div>
     </header>
     <main>
-        <div class="movie-list" id="searchResults">
-             <!-- Movie items will be appended here by JavaScript -->
+        <div id="searchResults" class="movie-list">
+            <!-- Movie items will be appended here by JavaScript -->
         </div>
         <div id="infoContainer" style="display: none;">
             <div id="info"></div>
