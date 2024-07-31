@@ -23,7 +23,10 @@ async function searchMovies(page = 1) {
                 <img src="${poster}" alt="${movie.Title}">
                 <div class="movie-title">${movie.Title}</div>
             `;
-            movieElement.onclick = () => loadMovie(movie.imdbID, movie.Type);
+            movieElement.onclick = () => {
+                console.log(`Clicked on ${movie.Title}`); // Debugging line
+                loadMovie(movie.imdbID, movie.Type);
+            };
             searchResults.appendChild(movieElement);
         });
 
@@ -36,6 +39,7 @@ async function searchMovies(page = 1) {
 }
 
 async function loadMovie(imdbID, type) {
+    console.log(`Loading movie with ID: ${imdbID}`); // Debugging line
     const apiKey = '212011c';
     const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
