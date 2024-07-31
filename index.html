@@ -8,17 +8,19 @@
 </head>
 <body>
     <header>
-        <div class="logo">
-            <h1>Nateflix</h1>
-        </div>
-        <div class="search-container">
-            <input type="text" id="search" placeholder="Search for movies or TV series...">
-        </div>
+        <input type="text" id="movieName" placeholder="Search for movies...">
     </header>
     <main>
-        <div class="movie-list" id="movieList">
+        <div id="searchResults">
             <!-- Movie items will be appended here by JavaScript -->
         </div>
+        <div id="infoContainer" style="display: none;">
+            <div id="info"></div>
+            <div id="videoContainer"></div>
+            <select id="seasonSelect" style="display: none;"></select>
+            <select id="episodeSelect" style="display: none;"></select>
+        </div>
+        <div id="pagination"></div>
     </main>
     <script src="script.js"></script>
 </body>
