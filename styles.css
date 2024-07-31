@@ -42,6 +42,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    justify-content: center; /* Center the movies in the container */
 }
 
 .movie-item {
@@ -50,6 +51,7 @@ main {
     overflow: hidden;
     width: 200px;
     text-align: center;
+    margin-bottom: 20px; /* Add some space below each movie item */
 }
 
 .movie-item img {
