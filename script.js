@@ -6,10 +6,10 @@ document.getElementById('movieName').addEventListener('keypress', function(event
 
 async function searchMovies(page = 1) {
     const movieName = document.getElementById('movieName').value;
-    let query = s=${encodeURIComponent(movieName)}&page=${page};
+    let query = `s=${encodeURIComponent(movieName)}&page=${page}`;
 
     const apiKey = '212011c';
-    const response = await fetch(https://www.omdbapi.com/?apikey=${apiKey}&${query});
+    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}&${query}`);
     const data = await response.json();
 
     const searchResults = document.getElementById('searchResults');
@@ -20,10 +20,10 @@ async function searchMovies(page = 1) {
             const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
             const movieElement = document.createElement('div');
             movieElement.className = 'movie-item';
-            movieElement.innerHTML = 
+            movieElement.innerHTML = `
                 <img src="${poster}" alt="${movie.Title}">
                 <div class="movie-title">${movie.Title}</div>
-            ;
+            `;
             movieElement.onclick = () => loadMovie(movie.imdbID, movie.Type);
             searchResults.appendChild(movieElement);
         });
@@ -32,26 +32,26 @@ async function searchMovies(page = 1) {
         const totalPages = Math.ceil(totalResults / 10);
         updatePagination(page, totalPages);
     } else {
-        searchResults.innerHTML = <p>We couldn't find any results for the search "${movieName}". Make sure you haven't misspelled anything and try searching again.</p>;
+        searchResults.innerHTML = `<p>We couldn't find any results for the search "${movieName}". Make sure you haven't misspelled anything and try searching again.</p>`;
     }
 }
 
 async function loadMovie(imdbID, type) {
     const apiKey = '212011c';
-    const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey});
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
 
     if (data.Response === "True") {
-        let videoUrl = type === 'series' ? https://vidsrc.net/embed/${imdbID}/1-1 : https://vidsrc.net/embed/${imdbID};
-        document.getElementById('info').innerHTML = 
+        let videoUrl = type === 'series' ? `https://vidsrc.net/embed/${imdbID}/1-1` : `https://vidsrc.net/embed/${imdbID}`;
+        document.getElementById('info').innerHTML = `
             <h2>${data.Title}</h2>
             <div class="rating">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
                 <span>${data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
             </div>
             <p>${data.Plot}</p>
-        ;
-        document.getElementById('videoContainer').innerHTML = <iframe src="${videoUrl}" allowfullscreen></iframe>;
+        `;
+        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
 
         if (type === 'series') {
             loadSeasons(imdbID);
@@ -69,7 +69,7 @@ async function loadMovie(imdbID, type) {
 
 async function loadSeasons(imdbID) {
     const apiKey = '212011c';
-    const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&type=series);
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&type=series`);
     const data = await response.json();
 
     if (data.totalSeasons) {
@@ -78,7 +78,7 @@ async function loadSeasons(imdbID) {
         for (let i = 1; i <= data.totalSeasons; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = Season ${i};
+            option.textContent = `Season ${i}`;
             seasonSelect.appendChild(option);
         }
         loadEpisodes(imdbID, 1);
@@ -92,7 +92,7 @@ async function loadSeasons(imdbID) {
 
 async function loadEpisodes(imdbID, season) {
     const apiKey = '212011c';
-    const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&Season=${season});
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}&Season=${season}`);
     const data = await response.json();
 
     if (data.Episodes) {
@@ -101,7 +101,7 @@ async function loadEpisodes(imdbID, season) {
         data.Episodes.forEach(episode => {
             const option = document.createElement('option');
             option.value = episode.Episode;
-            option.textContent = Episode ${episode.Episode}: ${episode.Title};
+            option.textContent = `Episode ${episode.Episode}: ${episode.Title}`;
             episodeSelect.appendChild(option);
         });
 
@@ -116,11 +116,11 @@ async function loadEpisodes(imdbID, season) {
 }
 
 function loadEpisode(imdbID, season, episode) {
-    const videoUrl = https://vidsrc.net/embed/${imdbID}/${season}-${episode};
-    document.getElementById('videoContainer').innerHTML = <iframe src="${videoUrl}" allowfullscreen></iframe>;
+    const videoUrl = `https://vidsrc.net/embed/${imdbID}/${season}-${episode}`;
+    document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
     const showTitle = document.getElementById('info').querySelector('h2').textContent.split(' - ')[0];
-    const episodeTitle = SE ${season} - EP ${episode};
-    document.getElementById('info').querySelector('h2').textContent = ${showTitle} - ${episodeTitle};
+    const episodeTitle = `SE ${season} - EP ${episode}`;
+    document.getElementById('info').querySelector('h2').textContent = `${showTitle} - ${episodeTitle}`;
 }
 
 function updatePagination(currentPage, totalPages) {
@@ -177,4 +177,4 @@ function showSearch() {
     document.getElementById('infoContainer').style.display = 'none';
     document.getElementById('seasonSelect').style.display = 'none';
     document.getElementById('episodeSelect').style.display = 'none';
-}'
+}
