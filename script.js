@@ -97,7 +97,7 @@ async function loadMovie(imdbID) {
         document.getElementById('searchContainer').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
     } else {
-        alert('Movie or Show not found');
+        alert('Movie not found');
     }
 }
 
