@@ -43,7 +43,7 @@ async function searchMovies(page = 1) {
     if (sort) query += `&sort=${sort}`;
     query += `&page=${page}`;
 
-    const response = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&s=${this.query}&type=movie`);
+    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
     const data = await response.json();
 
     if (data.Response === "True") {
@@ -73,7 +73,7 @@ async function searchMovies(page = 1) {
 }
 
 async function loadMovie(imdbID) {
-    const response = await fetch(`http://www.omdbapi.com/?apikey=${apiKey}&s=${this.query}&type=movie`);
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
 
     if (data.Response === "True") {
