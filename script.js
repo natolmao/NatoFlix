@@ -77,7 +77,7 @@ async function loadMovie(imdbID) {
     const data = await response.json();
 
     if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.to/embed/movie/${imdbID}`;
+        const videoUrl = `https://vidsrc.net/embed/movie/${imdbID}`;
 
         // Display movie info
         const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
