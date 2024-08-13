@@ -88,7 +88,6 @@ async function loadMovie(imdbID) {
                 <span>${tomatoRating}</span>
             </div>
             <p>${data.Plot}</p>
-            <p>${data.Cast}</p>
         `;
 
         // Embed the video
