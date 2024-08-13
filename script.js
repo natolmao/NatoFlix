@@ -58,7 +58,7 @@ async function searchMovies(page = 1) {
             searchResults.appendChild(movieElement);
         });
 
-        const totalResults = parseInt(data.totalResults, 20);
+        const totalResults = parseInt(data.totalResults, 10);
         const totalPages = Math.ceil(totalResults / moviesPerPage);
         displayPagination(totalPages);
     } else {
@@ -88,6 +88,7 @@ async function loadMovie(imdbID) {
                 <span>${tomatoRating}</span>
             </div>
             <p>${data.Plot}</p>
+            <p>${data.Cast}</p>
         `;
 
         // Embed the video
@@ -97,7 +98,7 @@ async function loadMovie(imdbID) {
         document.getElementById('searchContainer').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
     } else {
-        alert('Movie not found');
+        alert('Movie or Show not found');
     }
 }
 
