@@ -58,7 +58,7 @@ async function searchMovies(page = 1) {
             searchResults.appendChild(movieElement);
         });
 
-        const totalResults = parseInt(data.totalResults, 10);
+        const totalResults = parseInt(data.totalResults, 20);
         const totalPages = Math.ceil(totalResults / moviesPerPage);
         displayPagination(totalPages);
     } else {
@@ -77,7 +77,7 @@ async function loadMovie(imdbID) {
     const data = await response.json();
 
     if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.net/embed/movie/${imdbID}`;
+        const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
 
         // Display movie info
         const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
