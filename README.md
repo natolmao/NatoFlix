@@ -1,1 +1,1 @@
-NatoFlix - Watch Any Movie Online for Free
+NateFlix - Watch Any Movie Online for Free
