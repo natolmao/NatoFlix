@@ -16,6 +16,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Handle browser navigation
+    window.addEventListener('popstate', function(event) {
+        console.log('Popstate event:', event.state);
+        if (event.state) {
+            const { imdbID, page, query } = event.state;
+            if (imdbID) {
+                loadMovie(imdbID, false);
+            } else if (page) {
+                searchMovies(page, false);
+            } else if (query) {
+                document.getElementById('movieName').value = query;
+                searchMovies(1, false);
+            } else {
+                showSearch();
+            }
+        } else {
+            showSearch();
+        }
+    });
+
+    // Initial page load handling
+    handleInitialLoad();
 });
 
 function populateYearOptions() {
@@ -29,7 +52,7 @@ function populateYearOptions() {
     }
 }
 
-async function searchMovies(page = 1) {
+async function searchMovies(page = 1, updateHistory = true) {
     currentPage = page;
     const movieName = document.getElementById('movieName').value;
     const genre = document.getElementById('genre').value;
@@ -54,13 +77,21 @@ async function searchMovies(page = 1) {
             const movieElement = document.createElement('img');
             movieElement.src = poster;
             movieElement.alt = movie.Title;
-            movieElement.onclick = () => loadMovie(movie.imdbID);
+            movieElement.onclick = () => loadMovie(movie.imdbID, true);
             searchResults.appendChild(movieElement);
         });
 
         const totalResults = parseInt(data.totalResults, 10);
         const totalPages = Math.ceil(totalResults / moviesPerPage);
         displayPagination(totalPages);
+
+        if (updateHistory) {
+            const queryString = new URLSearchParams({
+                search: movieName,
+                page: currentPage
+            }).toString();
+            history.pushState({ page: currentPage, query: movieName }, '', `?${queryString}`);
+        }
     } else {
         alert('No movies found');
     }
@@ -72,7 +103,7 @@ async function searchMovies(page = 1) {
     document.getElementById('sort').blur();
 }
 
-async function loadMovie(imdbID) {
+async function loadMovie(imdbID, updateHistory = true) {
     const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
 
@@ -96,6 +127,10 @@ async function loadMovie(imdbID) {
         // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
+
+        if (updateHistory) {
+            history.pushState({ imdbID }, '', `?movie=${imdbID}`);
+        }
     } else {
         alert('Movie not found');
     }
@@ -105,6 +140,9 @@ function showSearch() {
     // Show the search container and hide the info container
     document.getElementById('searchContainer').style.display = 'block';
     document.getElementById('infoContainer').style.display = 'none';
+
+    // Ensure that the search results are updated based on the URL
+    handleInitialLoad();
 }
 
 function displayPagination(totalPages) {
@@ -141,5 +179,21 @@ function displayPagination(totalPages) {
 
     if (currentPage < totalPages) {
         pagination.appendChild(createPageButton('Next', currentPage + 1));
+    }
+}
+
+function handleInitialLoad() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const search = queryParams.get('search');
+    const movie = queryParams.get('movie');
+    const page = queryParams.get('page') || 1;
+
+    if (search) {
+        document.getElementById('movieName').value = search;
+        searchMovies(parseInt(page), false);
+    } else if (movie) {
+        loadMovie(movie, false);
+    } else {
+        showSearch();
     }
 }
