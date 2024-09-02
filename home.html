@@ -147,9 +147,11 @@
 </head>
 <body>
     <div class="container">
-       <div class="logo" onclick="window.location.href='index.html'"><img src="NATEFLIX LOGO.png" alt="NATEFLIX Logo"></div>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <img src="NATEFLIX LOGO.png" alt="NATEFLIX Logo">
+        </div>
         <div id="searchContainer">
-	<input type="text" id="movieName" placeholder="Search for Shows or Movies">
+            <input type="text" id="movieName" placeholder="Search for Shows or Movies">
             <div class="filters">
                 <input type="text" id="movieName" placeholder="Search for Shows or Movies">
                 <select id="genre">
@@ -178,6 +180,16 @@
                 <!-- Pagination controls will be displayed here -->
             </div>
         </div>
+
+        <!-- Trending Movies and TV Shows Section -->
+        <div class="trending-container" id="trendingContainer">
+            <h2>Trending Movies & TV Shows</h2>
+            <div class="trending-results" id="trendingResults">
+                <!-- Trending results will be displayed here -->
+            </div>
+        </div>
+        <!-- End of Trending Section -->
+
         <div class="info-container" id="infoContainer">
             <div class="video-container" id="videoContainer">
                 <!-- Video will be embedded here -->
@@ -187,6 +199,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Include your existing script -->
     <script src="script.js"></script>
+    <!-- Include trending.js for the new trending section -->
+    <script src="trending.js"></script>
 </body>
 </html>
