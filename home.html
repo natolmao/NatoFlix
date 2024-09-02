@@ -19,6 +19,42 @@
             align-items: center;
             margin: 0;
             padding: 0;
+	}
+
+        .trending-section {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .trending-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .tiles-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .tile {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .tile img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .tile:hover {
+            transform: scale(1.05);
         }
         .container {
             margin-top: 20px;
@@ -171,6 +207,11 @@
             <div class="search-results" id="searchResults">
                 <!-- Search results will be displayed here -->
             </div>
+	    <div class="trending-section">
+            <h2 class="trending-title">Trending Movies & TV Shows</h2>
+            <div class="tiles-container" id="trendingTiles">
+            <!-- Tiles will be injected here by JavaScript -->
+        </div>
             <div class="pagination" id="pagination">
                 <!-- Pagination controls will be displayed here -->
             </div>
