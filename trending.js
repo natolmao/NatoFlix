@@ -38,5 +38,5 @@ function displayTrending(movies) {
 
 function redirectToEmbedPage(movieId) {
     const imdbID = movieId;  // In case you need to map TMDB ID to IMDb ID, you can do so here.
-    window.location.href = `embed.html?movie=${imdbID}`;
+    window.location.href = `home.html?movie=${imdbID}`;
 }
