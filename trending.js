@@ -1,59 +1,40 @@
-const tmdbApiKey = '355c7191de5cb3f569b2a6b34cc274bc';
-const omdbApiKey = '212011c';
 
-async function fetchMovieDetailsFromTMDB(tmdbId) {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`);
-    const data = await response.json();
-    return data;
-}
+// trending.js
+document.addEventListener("DOMContentLoaded", function() {
+    const trendingContainer = document.getElementById("trendingResults");
 
-async function redirectToEmbedPage(tmdbId) {
-    const movieDetails = await fetchMovieDetailsFromTMDB(tmdbId);
-    const imdbID = movieDetails.external_ids.imdb_id;
+    // Fetch trending movies and TV shows from the TMDb API
+    function fetchTrending() {
+        const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDb API key
+        const url = `https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}`;
 
-    if (imdbID) {
-        loadMovie(imdbID);
-    } else {
-        alert('IMDb ID not found');
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log("TMDb API Response:", data); // Log the API response
+
+                if (data.results && data.results.length > 0) {
+                    displayTrending(data.results);
+                } else {
+                    trendingContainer.innerHTML = "<p>No trending movies or TV shows found.</p>";
+                }
+            })
+            .catch(error => console.error("Error fetching trending data:", error));
     }
-}
 
-async function loadMovie(imdbID, updateHistory = true) {
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${omdbApiKey}`);
-    const data = await response.json();
+    // Display trending movies and TV shows
+    function displayTrending(trendingList) {
+        console.log("Trending List:", trendingList); // Log the trending list
 
-    if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
-
-        // Display movie info
-        document.getElementById('info').innerHTML = `
-            <h2>${data.Title} (${data.Year})</h2>
-            <div class="rating">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
-                <span>${data.Ratings.find(r => r.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
-            </div>
-            <p>${data.Plot}</p>
-        `;
-
-        // Embed the video
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
-
-        // Hide the search container and trending section, show the info container
-        document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('trending-section').style.display = 'none'; // Hide trending section
-        document.getElementById('infoContainer').style.display = 'flex';
-
-        if (updateHistory) {
-            history.pushState({ imdbID }, '', `?movie=${imdbID}`);
-        }
-    } else {
-        alert('Movie not found');
+        trendingList.forEach(item => {
+            const movieElement = document.createElement("div");
+            movieElement.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}" onclick="window.location.href='https://vidsrc.net/embed/${item.id}'">
+            `;
+            trendingContainer.appendChild(movieElement);
+        });
     }
-}
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname === '/home.html') {
-        const trendingSection = document.getElementById('trending-section');
-        trendingSection.style.display = 'block'; // Show trending section on home page
-    }
+    // Call the fetchTrending function to populate the trending section
+    fetchTrending();
 });
