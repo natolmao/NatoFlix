@@ -197,34 +197,3 @@ function handleInitialLoad() {
         showSearch();
     }
 }
-
-const trendingItems = [
-            { id: "tt1234567", title: "Movie 1", poster: "movie1.jpg" },
-            { id: "tt2345678", title: "Movie 2", poster: "movie2.jpg" },
-            { id: "tt3456789", title: "TV Show 1", poster: "tvshow1.jpg" },
-            { id: "tt4567890", title: "TV Show 2", poster: "tvshow2.jpg" },
-            { id: "tt5678901", title: "Movie 3", poster: "movie3.jpg" },
-            // Add more items as needed
-        ];
-
-        // Function to generate the HTML for each tile
-        function generateTiles() {
-            const container = document.getElementById('trendingTiles');
-            container.innerHTML = ''; // Clear existing content
-
-            trendingItems.forEach(item => {
-                const tile = document.createElement('div');
-                tile.classList.add('tile');
-                tile.innerHTML = `
-                    <a href="https://www.imdb.com/title/${item.id}/" target="_blank">
-                        <img src="${item.poster}" alt="${item.title}">
-                    </a>
-                `;
-                container.appendChild(tile);
-            });
-        }
-
-        // Call the function to populate the trending tiles
-        generateTiles();
-    }
-}
