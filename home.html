@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="rZV9v8wySfwq4xtitjIWke5vnR9P3HbDbATgkJC0Oik" />
     <meta name="description" content="Discover and explore the best streaming content on Nateflix.">
-<meta name="keywords" content="Nateflix, Netflix,free movie website, streaming, movies, shows, entertainment">
-   <title>Nateflix - The Best of The Best</title>    <style>
+    <meta name="keywords" content="Nateflix, Netflix,free movie website, streaming, movies, shows, entertainment">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>Nateflix - The Best of The Best</title><style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         
         body {
@@ -24,13 +26,11 @@
             width: 100%;
             text-align: center;
         }
-        .logo {
-            font-size: 3em;
-            color: #E50914;
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-        }
+        .logo img {
+   	    width: 150px; /* Adjust the width as needed */
+   	    height: auto; /* Maintain aspect ratio */
+ 	    cursor: pointer;
+	}
         .filters {
             display: none;
             justify-content: center;
@@ -145,7 +145,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo" onclick="window.location.href='index.html'">NATEFLIX</div>
+       <div class="logo" onclick="window.location.href='index.html'"><img src="NATEFLIX LOGO.png" alt="NATEFLIX Logo"></div>
         <div id="searchContainer">
 	<input type="text" id="movieName" placeholder="Search for Shows or Movies">
             <div class="filters">
