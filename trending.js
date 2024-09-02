@@ -1,49 +1,37 @@
-async function fetchTrendingContent() {
-    const apiKey = '355c7191de5cb3f569b2a6b34cc274bc';  // Replace with your actual TMDb API key
-    const trendingMoviesUrl = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`;
-    const trendingTvUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`;
-    
-    try {
-        const [moviesResponse, tvResponse] = await Promise.all([
-            fetch(trendingMoviesUrl),
-            fetch(trendingTvUrl)
-        ]);
 
-        const moviesData = await moviesResponse.json();
-        const tvData = await tvResponse.json();
+// trending.js
 
-        return { movies: moviesData.results, tvShows: tvData.results };
-    } catch (error) {
-        console.error('Error fetching trending content:', error);
+document.addEventListener("DOMContentLoaded", function() {
+    const trendingContainer = document.getElementById("trendingResults");
+
+    // Fetch trending movies and TV shows from the OMDB API
+    function fetchTrending() {
+        const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your OMDB API key
+        const url = `https://www.omdbapi.com/?s=trending&type=movie&apikey=${apiKey}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.Response === "True") {
+                    displayTrending(data.Search);
+                } else {
+                    trendingContainer.innerHTML = "<p>No trending movies or TV shows found.</p>";
+                }
+            })
+            .catch(error => console.error("Error fetching trending data:", error));
     }
-}
 
-async function displayTrendingContent() {
-    const { movies, tvShows } = await fetchTrendingContent();
+    // Display trending movies and TV shows
+    function displayTrending(trendingList) {
+        trendingList.forEach(item => {
+            const movieElement = document.createElement("div");
+            movieElement.innerHTML = `
+                <img src="${item.Poster !== 'N/A' ? item.Poster : 'placeholder.jpg'}" alt="${item.Title}" onclick="window.location.href='https://vidsrc.net/embed/${item.imdbID}'">
+            `;
+            trendingContainer.appendChild(movieElement);
+        });
+    }
 
-    const moviesContainer = document.getElementById('trending-movies');
-    const tvShowsContainer = document.getElementById('trending-tv-shows');
-
-    movies.forEach(movie => {
-        const movieElement = document.createElement('div');
-        movieElement.classList.add('movie-item');
-        movieElement.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-            <a href="https://vidsrc.net/embed/${movie.imdb_id}" target="_blank">${movie.title}</a>
-        `;
-        moviesContainer.appendChild(movieElement);
-    });
-
-    tvShows.forEach(tvShow => {
-        const tvElement = document.createElement('div');
-        tvElement.classList.add('movie-item');
-        tvElement.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w500${tvShow.poster_path}" alt="${tvShow.name}">
-            <a href="https://vidsrc.net/embed/${tvShow.imdb_id}" target="_blank">${tvShow.name}</a>
-        `;
-        tvShowsContainer.appendChild(tvElement);
-    });
-}
-
-// Call the function to display trending content on page load
-displayTrendingContent();
+    // Call the fetchTrending function to populate the trending section
+    fetchTrending();
+});
