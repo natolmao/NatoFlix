@@ -126,6 +126,8 @@ async function loadMovie(imdbID, updateHistory = true) {
 
         // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
+        document.getElementById('trendingContainer').style.display = 'none';
+        document.getElementById('trendingSection').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
 
         if (updateHistory) {
@@ -139,6 +141,8 @@ async function loadMovie(imdbID, updateHistory = true) {
 function showSearch() {
     // Show the search container and hide the info container
     document.getElementById('searchContainer').style.display = 'block';
+    document.getElementById('trendingContainer').style.display = 'block';
+    document.getElementById('trendingSection').style.display = 'block';    
     document.getElementById('infoContainer').style.display = 'none';
 
     // Ensure that the search results are updated based on the URL
