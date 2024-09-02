@@ -76,13 +76,34 @@
         }
 	#trending-section {
     padding: 20px;
-    background-color: #f8f8f8;
+    background-color: #141414;
 }
 
 #trending-section h2 {
     margin-bottom: 10px;
     font-size: 24px;
-    color: #333;
+    color: #fff;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.trending-results {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+.trending-results img {
+    cursor: pointer;
+    width: 150px;
+    height: auto;
+    transition: transform 0.2s;
+    border-radius: 4px;
+}
+
+.trending-results img:hover {
+    transform: scale(1.1);
 }
 
 .movie-list {
