@@ -32,26 +32,19 @@ async function getImdbID(tmdbID) {
 }
 
 function displayTrending(movies) {
-    trendingContainer.innerHTML = '';
+    const trendingContainer = document.getElementById('trending-results');
+    trendingContainer.innerHTML = ''; // Clear any previous content
 
-    movies.forEach(async (movie) => {
-        const posterPath = movie.poster_path
-            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-            : 'https://via.placeholder.com/150';
-
-        const imdbID = await getImdbID(movie.id);
-        const movieElement = document.createElement('img');
-        movieElement.src = posterPath;
-        movieElement.alt = movie.title || movie.name;
-        movieElement.onclick = () => redirectToEmbedPage(imdbID);
+    movies.forEach(movie => {
+        const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/150';
+        const movieElement = document.createElement('div');
+        movieElement.className = 'movie-item';
+        movieElement.innerHTML = `
+            <a href="embed.html?movie=${movie.id}">
+                <img src="${poster}" alt="${movie.title}">
+                <p>${movie.title}</p>
+            </a>
+        `;
         trendingContainer.appendChild(movieElement);
     });
-}
-
-function redirectToEmbedPage(imdbID) {
-    if (imdbID) {
-        window.location.href = `https://vidsrc.net/embed/${imdbID}`;
-    } else {
-        alert('IMDb ID not found for this movie.');
-    }
 }
