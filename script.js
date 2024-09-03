@@ -1,4 +1,6 @@
-const apiKey = '212011c'; // Your OMDB API key
+let currentPage = 1;
+const moviesPerPage = 10;
+const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
 
 document.addEventListener('DOMContentLoaded', function() {
     populateYearOptions();
@@ -8,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     inputFields.forEach(field => {
         field.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault();
+                event.preventDefault(); // Prevent the default form submission
                 searchMovies();
             }
         });
@@ -16,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('popstate', function(event) {
         if (event.state) {
-            const { imdbID, page, query } = event.state;
-            if (imdbID) {
-                loadMovie(imdbID, false);
+            const { movieID, page, query } = event.state;
+            if (movieID) {
+                loadMovie(movieID, false);
             } else if (page) {
                 searchMovies(page, false);
             } else if (query) {
@@ -46,45 +48,83 @@ function populateYearOptions() {
     }
 }
 
-function loadMovie(imdbID, updateHistory = true) {
-    if (updateHistory) {
-        history.pushState({ imdbID }, '', `?movie=${imdbID}`);
+async function searchMovies(page = 1, updateHistory = true) {
+    currentPage = page;
+    const movieName = document.getElementById('movieName').value;
+    const genre = document.getElementById('genre').value;
+    const year = document.getElementById('year').value;
+    const sort = document.getElementById('sort').value;
+
+    let query = `&query=${encodeURIComponent(movieName)}&page=${page}`;
+
+    if (genre) query += `&with_genres=${encodeURIComponent(genre)}`;
+    if (year) query += `&primary_release_year=${year}`;
+
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}${query}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (data.results) {
+            displaySearchResults(data.results);
+            const totalResults = data.total_results;
+            const totalPages = Math.ceil(totalResults / moviesPerPage);
+            displayPagination(totalPages);
+
+            if (updateHistory) {
+                const queryString = new URLSearchParams({
+                    search: movieName,
+                    page: currentPage
+                }).toString();
+                history.pushState({ page: currentPage, query: movieName }, '', `?${queryString}`);
+            }
+        } else {
+            alert('No movies found');
+        }
+    } catch (error) {
+        console.error('Error searching for movies:', error);
+        alert('Failed to search for movies');
     }
-    // Redirect to the embed page
-    window.location.href = `embed.html?movie=${imdbID}`;
-}
+
     document.getElementById('movieName').blur();
     document.getElementById('genre').blur();
     document.getElementById('year').blur();
     document.getElementById('sort').blur();
 }
 
-async function loadMovie(imdbID, updateHistory = true) {
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
-    const data = await response.json();
-
-    if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
-
-        document.getElementById('info').innerHTML = `
-            <h2>${data.Title} (${data.Year})</h2>
-            <div class="rating">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
-                <span>${data.Ratings.find(r => r.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
-            </div>
-            <p>${data.Plot}</p>
-        `;
-
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
-
-        document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('infoContainer').style.display = 'flex';
-
-        if (updateHistory) {
-            history.pushState({ imdbID }, '', `?movie=${imdbID}`);
+async function loadMovie(movieID, updateHistory = true) {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${movieID}?api_key=${apiKey}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    } else {
-        alert('Movie not found');
+        const data = await response.json();
+
+        if (data) {
+            const videoUrl = `https://vidsrc.net/embed/${movieID}`;
+
+            document.getElementById('info').innerHTML = `
+                <h2>${data.title} (${data.release_date.split('-')[0]})</h2>
+                <div class="rating">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
+                    <span>${data.vote_average}</span>
+                </div>
+                <p>${data.overview}</p>
+            `;
+
+            document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+
+            document.getElementById('searchContainer').style.display = 'none';
+            document.getElementById('infoContainer').style.display = 'flex';
+
+            if (updateHistory) {
+                history.pushState({ movieID }, '', `?movie=${movieID}`);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading movie:', error);
+        alert('Failed to load movie details');
     }
 }
 
