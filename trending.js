@@ -1,12 +1,11 @@
-// Constants
 const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
-
-// DOM Elements
 const trendingContainer = document.getElementById('trending-results');
+
+document.addEventListener('DOMContentLoaded', fetchTrendingMovies);
 
 async function fetchTrendingMovies() {
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
+        const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -22,7 +21,6 @@ async function fetchTrendingMovies() {
     }
 }
 
-// Display trending movies
 function displayTrending(movies) {
     trendingContainer.innerHTML = ''; // Clear any previous content
 
@@ -33,16 +31,9 @@ function displayTrending(movies) {
         movieElement.innerHTML = `
             <a href="embed.html?movie=${movie.id}">
                 <img src="${poster}" alt="${movie.title || movie.name}">
-                <p>${movie.title || movie.name}</p>
+                <span>${movie.title || movie.name}</span>
             </a>
         `;
         trendingContainer.appendChild(movieElement);
     });
 }
-
-// Initialize the trending section on page load
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname === '/home.html') {
-        fetchTrendingMovies();
-    }
-});
