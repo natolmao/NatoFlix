@@ -1,4 +1,4 @@
-const trendingApiKey = '355c7191de5cb3f569b2a6b34cc274bc';
+const apiKey = '355c7191de5cb3f569b2a6b34cc274bc';
 const trendingContainer = document.querySelector('.trending-results');
 const trendingSection = document.getElementById('trending-section'); // Reference to the trending section
 
@@ -11,12 +11,12 @@ if (window.location.pathname === '/home.html' || window.location.pathname === '/
 
 async function fetchTrendingMovies() {
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${trendingApiKey}`);
+        const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
         const data = await response.json();
         displayTrending(data.results);
     } catch (error) {
         console.error('Error fetching trending movies:', error);
-        trendingContainer.innerHTML = "<p>No trending movies or TV shows found.</p>";
+        trendingContainer.innerHTML = "<p>Failed to load trending movies.</p>";
     }
 }
 
