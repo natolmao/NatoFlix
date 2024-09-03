@@ -46,50 +46,13 @@ function populateYearOptions() {
     }
 }
 
-async function searchMovies(page = 1, updateHistory = true) {
-    currentPage = page;
-    const movieName = document.getElementById('movieName').value;
-    const genre = document.getElementById('genre').value;
-    const year = document.getElementById('year').value;
-    const sort = document.getElementById('sort').value;
-    let query = '';
-
-    if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
-    if (genre) query += `&genre=${encodeURIComponent(genre)}`;
-    if (year) query += `&y=${year}`;
-    if (sort) query += `&sort=${sort}`;
-    query += `&page=${page}`;
-
-    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
-    const data = await response.json();
-
-    if (data.Response === "True") {
-        const searchResults = document.getElementById('searchResults');
-        searchResults.innerHTML = '';
-        data.Search.forEach(movie => {
-            const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
-            const movieElement = document.createElement('img');
-            movieElement.src = poster;
-            movieElement.alt = movie.Title;
-            movieElement.onclick = () => loadMovie(movie.imdbID, true);
-            searchResults.appendChild(movieElement);
-        });
-
-        const totalResults = parseInt(data.totalResults, 10);
-        const totalPages = Math.ceil(totalResults / moviesPerPage);
-        displayPagination(totalPages);
-
-        if (updateHistory) {
-            const queryString = new URLSearchParams({
-                search: movieName,
-                page: currentPage
-            }).toString();
-            history.pushState({ page: currentPage, query: movieName }, '', `?${queryString}`);
-        }
-    } else {
-        alert('No movies found');
+function loadMovie(imdbID, updateHistory = true) {
+    if (updateHistory) {
+        history.pushState({ imdbID }, '', `?movie=${imdbID}`);
     }
-
+    // Redirect to the embed page
+    window.location.href = `embed.html?movie=${imdbID}`;
+}
     document.getElementById('movieName').blur();
     document.getElementById('genre').blur();
     document.getElementById('year').blur();
