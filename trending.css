@@ -1,6 +1,7 @@
 #trending-section {
     padding: 20px;
     background-color: #f8f8f8;
+    width: 100%;
 }
 
 #trending-section h2 {
@@ -9,29 +10,22 @@
     color: #333;
 }
 
-.movie-list {
+.trending-results {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 15px;
-    overflow-x: auto;
+    margin-top: 20px;
 }
 
-.movie-item {
+.trending-results img {
     width: 150px;
-    text-align: center;
-}
-
-.movie-item img {
-    width: 100%;
+    height: auto;
     border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.movie-item a {
-    display: block;
-    margin-top: 5px;
-    color: #007BFF;
-    text-decoration: none;
-}
-
-.movie-item a:hover {
-    text-decoration: underline;
+.trending-results img:hover {
+    transform: scale(1.1);
 }
