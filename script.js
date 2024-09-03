@@ -1,7 +1,6 @@
-const apiKeyOMDB = '212011c'; // OMDB API Key
-const apiKeyTMDB = '355c7191de5cb3f569b2a6b34cc274bc'; // TMDB API Key
 let currentPage = 1;
 const moviesPerPage = 10;
+const apiKey = '212011c';
 
 document.addEventListener('DOMContentLoaded', function() {
     populateYearOptions();
@@ -20,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle browser navigation
     window.addEventListener('popstate', function(event) {
+        console.log('Popstate event:', event.state);
         if (event.state) {
             const { imdbID, page, query } = event.state;
             if (imdbID) {
@@ -60,28 +60,28 @@ async function searchMovies(page = 1, updateHistory = true) {
     const sort = document.getElementById('sort').value;
     let query = '';
 
-    if (movieName) query += `&query=${encodeURIComponent(movieName)}`;
-    if (genre) query += `&with_genres=${encodeURIComponent(genre)}`;
-    if (year) query += `&year=${year}`;
-    if (sort) query += `&sort_by=${sort}`;
+    if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
+    if (genre) query += `&genre=${encodeURIComponent(genre)}`;
+    if (year) query += `&y=${year}`;
+    if (sort) query += `&sort=${sort}`;
     query += `&page=${page}`;
 
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKeyTMDB}${query}`);
+    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
     const data = await response.json();
 
-    if (data.results) {
+    if (data.Response === "True") {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
-        data.results.forEach(movie => {
-            const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/150';
+        data.Search.forEach(movie => {
+            const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
             const movieElement = document.createElement('img');
             movieElement.src = poster;
-            movieElement.alt = movie.title;
-            movieElement.onclick = () => loadMovie(movie.id, true);
+            movieElement.alt = movie.Title;
+            movieElement.onclick = () => loadMovie(movie.imdbID, true);
             searchResults.appendChild(movieElement);
         });
 
-        const totalResults = data.total_results;
+        const totalResults = parseInt(data.totalResults, 10);
         const totalPages = Math.ceil(totalResults / moviesPerPage);
         displayPagination(totalPages);
 
@@ -103,23 +103,22 @@ async function searchMovies(page = 1, updateHistory = true) {
     document.getElementById('sort').blur();
 }
 
-async function loadMovie(tmdbID, updateHistory = true) {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${tmdbID}?api_key=${apiKeyTMDB}`);
+async function loadMovie(imdbID, updateHistory = true) {
+    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
     const data = await response.json();
 
-    if (data) {
-        const imdbID = data.imdb_id;
+    if (data.Response === "True") {
         const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
 
         // Display movie info
-        const tomatoRating = 'N/A'; // TMDB does not provide Rotten Tomatoes rating directly
+        const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
         document.getElementById('info').innerHTML = `
-            <h2>${data.title} (${data.release_date.split('-')[0]})</h2>
+            <h2>${data.Title} (${data.Year})</h2>
             <div class="rating">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
                 <span>${tomatoRating}</span>
             </div>
-            <p>${data.overview}</p>
+            <p>${data.Plot}</p>
         `;
 
         // Embed the video
@@ -127,7 +126,6 @@ async function loadMovie(tmdbID, updateHistory = true) {
 
         // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('trendingSection').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
 
         if (updateHistory) {
@@ -142,7 +140,6 @@ function showSearch() {
     // Show the search container and hide the info container
     document.getElementById('searchContainer').style.display = 'block';
     document.getElementById('infoContainer').style.display = 'none';
-    document.getElementById('trendingSection').style.display = 'none';
 
     // Ensure that the search results are updated based on the URL
     handleInitialLoad();
@@ -198,43 +195,5 @@ function handleInitialLoad() {
         loadMovie(movie, false);
     } else {
         showSearch();
-    }
-}
-
-// Trending Section - Only visible on home.html
-if (window.location.pathname === '/home.html') {
-    async function loadTrendingMovies() {
-        const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKeyTMDB}`);
-        const data = await response.json();
-
-        if (data.results) {
-            const trendingContainer = document.getElementById('trendingResults');
-            trendingContainer.innerHTML = '';
-            data.results.forEach(movie => {
-                const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/150';
-                const movieElement = document.createElement('div');
-                movieElement.className = 'movie-item';
-                movieElement.innerHTML = `
-                    <a href="#" onclick="redirectToEmbedPage('${movie.id}')">
-                        <img src="${poster}" alt="${movie.title}">
-                        <span>${movie.title}</span>
-                    </a>
-                `;
-                trendingContainer.appendChild(movieElement);
-            });
-        } else {
-            document.getElementById('trendingResults').innerHTML = '<p>No trending movies found.</p>';
-        }
-    }
-
-    loadTrendingMovies();
-}
-
-function redirectToEmbedPage(movieId) {
-    const imdbID = ''; // Placeholder. Implement mapping TMDB ID to IMDb ID if needed.
-    if (imdbID) {
-        loadMovie(imdbID);
-    } else {
-        alert('IMDb ID not found for this movie.');
     }
 }
