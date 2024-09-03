@@ -1,37 +1,27 @@
-const apiKey = '355c7191de5cb3f569b2a6b34cc274bc';
-const trendingContainer = document.querySelector('.trending-results');
-const trendingSection = document.getElementById('trending-section'); // Reference to the trending section
+// Constants
+const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.pathname === '/home.html') {
-        fetchTrendingMovies();
-    }
-});
+// DOM Elements
+const trendingContainer = document.getElementById('trending-results');
 
+// Fetch trending movies and display them
 async function fetchTrendingMovies() {
     try {
         const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
         const data = await response.json();
-        displayTrending(data.results);
+        if (data.results) {
+            displayTrending(data.results);
+        } else {
+            trendingContainer.innerHTML = '<p>No trending movies or TV shows found.</p>';
+        }
     } catch (error) {
         console.error('Error fetching trending movies:', error);
-        trendingContainer.innerHTML = "<p>Failed to load trending movies.</p>";
+        trendingContainer.innerHTML = '<p>Failed to load trending movies.</p>';
     }
 }
 
-async function getImdbID(tmdbID) {
-    try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/${tmdbID}?api_key=${trendingApiKey}&append_to_response=external_ids`);
-        const data = await response.json();
-        return data.external_ids.imdb_id ? data.external_ids.imdb_id : null;
-    } catch (error) {
-        console.error('Error fetching IMDb ID:', error);
-        return null;
-    }
-}
-
+// Display trending movies
 function displayTrending(movies) {
-    const trendingContainer = document.getElementById('trending-results');
     trendingContainer.innerHTML = ''; // Clear any previous content
 
     movies.forEach(movie => {
@@ -40,10 +30,17 @@ function displayTrending(movies) {
         movieElement.className = 'movie-item';
         movieElement.innerHTML = `
             <a href="embed.html?movie=${movie.id}">
-                <img src="${poster}" alt="${movie.title}">
-                <p>${movie.title}</p>
+                <img src="${poster}" alt="${movie.title || movie.name}">
+                <p>${movie.title || movie.name}</p>
             </a>
         `;
         trendingContainer.appendChild(movieElement);
     });
 }
+
+// Initialize the trending section on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.pathname === '/home.html') {
+        fetchTrendingMovies();
+    }
+});
