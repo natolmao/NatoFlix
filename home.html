@@ -11,7 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
         body {
-            font-family: 'Bebas Neue', Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #141414;
             color: #fff;
             display: flex;
@@ -73,37 +73,16 @@
         }
         .search-results img:hover {
             transform: scale(1.1);
-}
-#trending-section {
+        }
+	#trending-section {
     padding: 20px;
-    background-color: #141414;
+    background-color: #f8f8f8;
 }
 
 #trending-section h2 {
     margin-bottom: 10px;
     font-size: 24px;
-    color: #fff;
-    text-align: center;
-    font-family: 'Bebas Neue', sans-serif;
-}
-
-.trending-results {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 40px;
-}
-
-.trending-results img {
-    cursor: pointer;
-    width: 150px;
-    height: auto;
-    transition: transform 0.2s;
-    border-radius: 4px;
-}
-
-.trending-results img:hover {
-    transform: scale(1.1);
+    color: #333;
 }
 
 .movie-list {
@@ -240,9 +219,9 @@
         </div>
 
         <!-- Trending Movies and TV Shows Section -->
-        <div id="trending-section">
+        <div class="trending-container" id="trendingContainer">
             <h2>Trending Movies & TV Shows</h2>
-            <div class="trending-results"></div>
+            <div class="trending-results" id="trendingResults">
                 <!-- Trending results will be displayed here -->
             </div>
         </div>
