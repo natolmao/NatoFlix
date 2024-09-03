@@ -4,10 +4,12 @@ const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API
 // DOM Elements
 const trendingContainer = document.getElementById('trending-results');
 
-// Fetch trending movies and display them
 async function fetchTrendingMovies() {
     try {
         const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         if (data.results) {
             displayTrending(data.results);
