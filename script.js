@@ -60,13 +60,13 @@ async function searchMovies(page = 1, updateHistory = true) {
     const sort = document.getElementById('sort').value;
     let query = '';
 
-    if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
-    if (genre) query += `&genre=${encodeURIComponent(genre)}`;
-    if (year) query += `&y=${year}`;
-    if (sort) query += `&sort=${sort}`;
-    query += `&page=${page}`;
+    if (movieName) query += &s=${encodeURIComponent(movieName)};
+    if (genre) query += &genre=${encodeURIComponent(genre)};
+    if (year) query += &y=${year};
+    if (sort) query += &sort=${sort};
+    query += &page=${page};
 
-    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
+    const response = await fetch(https://www.omdbapi.com/?apikey=${apiKey}${query});
     const data = await response.json();
 
     if (data.Response === "True") {
@@ -90,7 +90,7 @@ async function searchMovies(page = 1, updateHistory = true) {
                 search: movieName,
                 page: currentPage
             }).toString();
-            history.pushState({ page: currentPage, query: movieName }, '', `?${queryString}`);
+            history.pushState({ page: currentPage, query: movieName }, '', ?${queryString});
         }
     } else {
         alert('No movies found');
@@ -104,34 +104,32 @@ async function searchMovies(page = 1, updateHistory = true) {
 }
 
 async function loadMovie(imdbID, updateHistory = true) {
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
+    const response = await fetch(https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey});
     const data = await response.json();
 
     if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
+        const videoUrl = https://vidsrc.net/embed/${imdbID};
 
         // Display movie info
         const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
-        document.getElementById('info').innerHTML = `
+        document.getElementById('info').innerHTML = 
             <h2>${data.Title} (${data.Year})</h2>
             <div class="rating">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
                 <span>${tomatoRating}</span>
             </div>
             <p>${data.Plot}</p>
-        `;
+        ;
 
         // Embed the video
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+        document.getElementById('videoContainer').innerHTML = <iframe src="${videoUrl}" allowfullscreen></iframe>;
 
         // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('trendingContainer').style.display = 'none';
-        document.getElementById('trendingSection').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
 
         if (updateHistory) {
-            history.pushState({ imdbID }, '', `?movie=${imdbID}`);
+            history.pushState({ imdbID }, '', ?movie=${imdbID});
         }
     } else {
         alert('Movie not found');
@@ -141,8 +139,6 @@ async function loadMovie(imdbID, updateHistory = true) {
 function showSearch() {
     // Show the search container and hide the info container
     document.getElementById('searchContainer').style.display = 'block';
-    document.getElementById('trendingContainer').style.display = 'block';
-    document.getElementById('trendingSection').style.display = 'block';    
     document.getElementById('infoContainer').style.display = 'none';
 
     // Ensure that the search results are updated based on the URL
