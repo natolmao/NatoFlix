@@ -1,25 +1,20 @@
-let currentPage = 1;
-const moviesPerPage = 10;
-const apiKey = '212011c';
+const apiKey = '212011c'; // Your OMDB API key
 
 document.addEventListener('DOMContentLoaded', function() {
     populateYearOptions();
     document.getElementById('searchButton').addEventListener('click', () => searchMovies());
 
-    // Add an event listener to the input fields to listen for the Enter key
     const inputFields = document.querySelectorAll('#movieName, #genre, #year, #sort');
     inputFields.forEach(field => {
         field.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
+                event.preventDefault();
                 searchMovies();
             }
         });
     });
 
-    // Handle browser navigation
     window.addEventListener('popstate', function(event) {
-        console.log('Popstate event:', event.state);
         if (event.state) {
             const { imdbID, page, query } = event.state;
             if (imdbID) {
@@ -37,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initial page load handling
     handleInitialLoad();
 });
 
@@ -96,7 +90,6 @@ async function searchMovies(page = 1, updateHistory = true) {
         alert('No movies found');
     }
 
-    // Unfocus the input fields
     document.getElementById('movieName').blur();
     document.getElementById('genre').blur();
     document.getElementById('year').blur();
@@ -110,21 +103,17 @@ async function loadMovie(imdbID, updateHistory = true) {
     if (data.Response === "True") {
         const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
 
-        // Display movie info
-        const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
         document.getElementById('info').innerHTML = `
             <h2>${data.Title} (${data.Year})</h2>
             <div class="rating">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
-                <span>${tomatoRating}</span>
+                <span>${data.Ratings.find(r => r.Source === 'Rotten Tomatoes')?.Value || 'N/A'}</span>
             </div>
             <p>${data.Plot}</p>
         `;
 
-        // Embed the video
         document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
 
-        // Hide the search container and show the info container
         document.getElementById('searchContainer').style.display = 'none';
         document.getElementById('infoContainer').style.display = 'flex';
 
@@ -137,11 +126,8 @@ async function loadMovie(imdbID, updateHistory = true) {
 }
 
 function showSearch() {
-    // Show the search container and hide the info container
     document.getElementById('searchContainer').style.display = 'block';
     document.getElementById('infoContainer').style.display = 'none';
-
-    // Ensure that the search results are updated based on the URL
     handleInitialLoad();
 }
 
