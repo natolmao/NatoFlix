@@ -7,7 +7,6 @@
     <meta name="description" content="Discover and explore the best streaming content on Nateflix.">
     <meta name="keywords" content="Nateflix, Netflix,free movie website, streaming, movies, shows, entertainment">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?">
-    <link rel="stylesheet" href="trending.css">
     <title>Nateflix - Watch Any TV Show or Movie for Free</title><style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
@@ -75,43 +74,6 @@
         .search-results img:hover {
             transform: scale(1.1);
         }
-	#trending-section {
-    padding: 20px;
-    background-color: #f8f8f8;
-}
-
-#trending-section h2 {
-    margin-bottom: 10px;
-    font-size: 24px;
-    color: #333;
-}
-
-.movie-list {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-}
-
-.movie-item {
-    width: 150px;
-    text-align: center;
-}
-
-.movie-item img {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.movie-item a {
-    display: block;
-    margin-top: 5px;
-    color: #007BFF;
-    text-decoration: none;
-}
-
-.movie-item a:hover {
-    text-decoration: underline;
-}
         .info-container {
             display: none;
             flex-direction: column;
@@ -185,11 +147,9 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo" onclick="window.location.href='index.html'">
-            <img src="NATEFLIX LOGO.png" alt="NATEFLIX Logo">
-        </div>
+       <div class="logo" onclick="window.location.href='index.html'"><img src="NATEFLIX LOGO.png" alt="NATEFLIX Logo"></div>
         <div id="searchContainer">
-            <input type="text" id="movieName" placeholder="Search for Shows or Movies">
+	<input type="text" id="movieName" placeholder="Search for Shows or Movies">
             <div class="filters">
                 <input type="text" id="movieName" placeholder="Search for Shows or Movies">
                 <select id="genre">
@@ -218,16 +178,6 @@
                 <!-- Pagination controls will be displayed here -->
             </div>
         </div>
-
-        <!-- Trending Movies and TV Shows Section -->
-        <div class="trending-section" id="trendingSection">
-            <h2>Trending Movies & TV Shows</h2>
-            <div class="trending-results" id="trendingResults">
-                <!-- Trending results will be displayed here -->
-            </div>
-        </div>
-        <!-- End of Trending Section -->
-
         <div class="info-container" id="infoContainer">
             <div class="video-container" id="videoContainer">
                 <!-- Video will be embedded here -->
@@ -237,10 +187,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Include your existing script -->
     <script src="script.js"></script>
-    <!-- Include trending.js for the new trending section -->
-    <script src="trending.js"></script>
 </body>
 </html>
