@@ -1,5 +1,0 @@
-# Enable URL rewriting
-RewriteEngine On
-
-# Rewrite /home to index.html
-RewriteRule ^home$ /index.html [L]
