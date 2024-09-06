@@ -1,199 +1,122 @@
-let currentPage = 1;
-const moviesPerPage = 10;
-const apiKey = '212011c';
+const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
+let currentPage = 1; // Ensure currentPage is tracked globally
 
-document.addEventListener('DOMContentLoaded', function() {
-    populateYearOptions();
-    document.getElementById('searchButton').addEventListener('click', () => searchMovies());
-
-    // Add an event listener to the input fields to listen for the Enter key
-    const inputFields = document.querySelectorAll('#movieName, #genre, #year, #sort');
-    inputFields.forEach(field => {
-        field.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default form submission
-                searchMovies();
-            }
-        });
-    });
-
-    // Handle browser navigation
-    window.addEventListener('popstate', function(event) {
-        console.log('Popstate event:', event.state);
-        if (event.state) {
-            const { imdbID, page, query } = event.state;
-            if (imdbID) {
-                loadMovie(imdbID, false);
-            } else if (page) {
-                searchMovies(page, false);
-            } else if (query) {
-                document.getElementById('movieName').value = query;
-                searchMovies(1, false);
-            } else {
-                showSearch();
-            }
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTrendingMovies();
+    document.getElementById('searchBar').addEventListener('input', (event) => {
+        const query = event.target.value.trim();
+        if (query) {
+            searchMoviesAndTVShows(query);
         } else {
-            showSearch();
+            fetchTrendingMovies();
         }
     });
-
-    // Initial page load handling
-    handleInitialLoad();
 });
 
-function populateYearOptions() {
-    const yearSelect = document.getElementById('year');
-    const currentYear = new Date().getFullYear();
-    for (let year = currentYear; year >= 1900; year--) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
+async function fetchTrendingMovies() {
+    try {
+        const movieResponse = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}`);
+        const tvResponse = await fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}`);
+        const movieData = await movieResponse.json();
+        const tvData = await tvResponse.json();
+        displayResults(movieData.results, tvData.results);
+    } catch (error) {
+        console.error('Error fetching trending movies and TV shows:', error);
     }
 }
 
-async function searchMovies(page = 1, updateHistory = true) {
-    currentPage = page;
-    const movieName = document.getElementById('movieName').value;
-    const genre = document.getElementById('genre').value;
-    const year = document.getElementById('year').value;
-    const sort = document.getElementById('sort').value;
-    let query = '';
+async function searchMoviesAndTVShows(query) {
+    try {
+        const movieResponse = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`);
+        const tvResponse = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${encodeURIComponent(query)}`);
+        const movieData = await movieResponse.json();
+        const tvData = await tvResponse.json();
+        displayResults(movieData.results, tvData.results);
+    } catch (error) {
+        console.error('Error searching movies and TV shows:', error);
+    }
+}
 
-    if (movieName) query += `&s=${encodeURIComponent(movieName)}`;
-    if (genre) query += `&genre=${encodeURIComponent(genre)}`;
-    if (year) query += `&y=${year}`;
-    if (sort) query += `&sort=${sort}`;
-    query += `&page=${page}`;
-
-    const response = await fetch(`https://www.omdbapi.com/?apikey=${apiKey}${query}`);
-    const data = await response.json();
-
-    if (data.Response === "True") {
-        const searchResults = document.getElementById('searchResults');
-        searchResults.innerHTML = '';
-        data.Search.forEach(movie => {
-            const poster = movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150';
-            const movieElement = document.createElement('img');
-            movieElement.src = poster;
-            movieElement.alt = movie.Title;
-            movieElement.onclick = () => loadMovie(movie.imdbID, true);
-            searchResults.appendChild(movieElement);
-        });
-
-        const totalResults = parseInt(data.totalResults, 10);
-        const totalPages = Math.ceil(totalResults / moviesPerPage);
-        displayPagination(totalPages);
-
-        if (updateHistory) {
-            const queryString = new URLSearchParams({
-                search: movieName,
-                page: currentPage
-            }).toString();
-            history.pushState({ page: currentPage, query: movieName }, '', `?${queryString}`);
-        }
+function displayResults(movies, tvShows) {
+    const resultsList = document.getElementById('results');
+    const headerText = document.getElementById('headerText');
+    
+    // Check if results are being displayed
+    if (movies.length > 0 || tvShows.length > 0) {
+        headerText.style.display = 'none'; // Hide the header
     } else {
-        alert('No movies found');
+        headerText.style.display = 'block'; // Show the header
     }
 
-    // Unfocus the input fields
-    document.getElementById('movieName').blur();
-    document.getElementById('genre').blur();
-    document.getElementById('year').blur();
-    document.getElementById('sort').blur();
-}
+    resultsList.innerHTML = '';
 
-async function loadMovie(imdbID, updateHistory = true) {
-    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
-    const data = await response.json();
+    const allResults = [...movies, ...tvShows];
 
-    if (data.Response === "True") {
-        const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
-
-        // Display movie info
-        const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
-        document.getElementById('info').innerHTML = `
-            <h2>${data.Title} (${data.Year})</h2>
-            <div class="rating">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
-                <span>${tomatoRating}</span>
-            </div>
-            <p>${data.Plot}</p>
+    allResults.forEach(item => {
+        const itemTile = document.createElement('div');
+        itemTile.className = 'movie-tile';
+        itemTile.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}">
+            <h3>${item.title || item.name}</h3>
         `;
-
-        // Embed the video
-        document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
-
-        // Hide the search container and show the info container
-        document.getElementById('searchContainer').style.display = 'none';
-        document.getElementById('infoContainer').style.display = 'flex';
-
-        if (updateHistory) {
-            history.pushState({ imdbID }, '', `?movie=${imdbID}`);
-        }
-    } else {
-        alert('Movie not found');
-    }
+        itemTile.addEventListener('click', () => handleItemClick(item.id, item.media_type));
+        resultsList.appendChild(itemTile);
+    });
 }
 
-function showSearch() {
-    // Show the search container and hide the info container
-    document.getElementById('searchContainer').style.display = 'block';
-    document.getElementById('infoContainer').style.display = 'none';
+async function handleItemClick(itemId, mediaType) {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${itemId}/external_ids?api_key=${apiKey}`);
+        const data = await response.json();
+        const imdbID = data.imdb_id;
 
-    // Ensure that the search results are updated based on the URL
-    handleInitialLoad();
+        if (imdbID) {
+            window.location.href = `movie-player.html?movie=${imdbID}&type=${mediaType}`;
+        } else {
+            alert('IMDb ID not found');
+        }
+    } catch (error) {
+        console.error('Error fetching IMDb ID:', error);
+    }
 }
 
 function displayPagination(totalPages) {
     const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
+    pagination.innerHTML = ''; // Clear existing pagination
 
     const createPageButton = (text, page) => {
         const button = document.createElement('button');
         button.textContent = text;
-        button.disabled = page === currentPage;
-        button.onclick = () => searchMovies(page);
+        button.disabled = page === currentPage; // Disable the current page button
+        button.onclick = () => {
+            currentPage = page; // Update currentPage when button is clicked
+            searchMovies(page); // Call your searchMovies function with the new page number
+        };
         return button;
     };
 
     if (currentPage > 1) {
-        pagination.appendChild(createPageButton('Previous', currentPage - 1));
+        pagination.appendChild(createPageButton('Previous', currentPage - 1)); // Create "Previous" button
     }
 
-    pagination.appendChild(createPageButton(1, 1));
+    pagination.appendChild(createPageButton(1, 1)); // Always show the first page button
 
     if (currentPage > 3) {
-        pagination.appendChild(document.createTextNode('...'));
+        pagination.appendChild(document.createTextNode('...')); // Add ellipsis if current page is far from the first
     }
 
+    // Show 2 pages before and after the current page
     for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
         pagination.appendChild(createPageButton(i, i));
     }
 
     if (currentPage < totalPages - 2) {
-        pagination.appendChild(document.createTextNode('...'));
+        pagination.appendChild(document.createTextNode('...')); // Add ellipsis if current page is far from the last
     }
 
-    pagination.appendChild(createPageButton(totalPages, totalPages));
+    pagination.appendChild(createPageButton(totalPages, totalPages)); // Always show the last page button
 
     if (currentPage < totalPages) {
-        pagination.appendChild(createPageButton('Next', currentPage + 1));
-    }
-}
-
-function handleInitialLoad() {
-    const queryParams = new URLSearchParams(window.location.search);
-    const search = queryParams.get('search');
-    const movie = queryParams.get('movie');
-    const page = queryParams.get('page') || 1;
-
-    if (search) {
-        document.getElementById('movieName').value = search;
-        searchMovies(parseInt(page), false);
-    } else if (movie) {
-        loadMovie(movie, false);
-    } else {
-        showSearch();
+        pagination.appendChild(createPageButton('Next', currentPage + 1)); // Create "Next" button
     }
 }
