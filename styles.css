@@ -44,6 +44,8 @@ body {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    margin-right: 800px;
+    margin-left: 800px;
 }
 
 .movie-tile {
