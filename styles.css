@@ -16,7 +16,8 @@ body {
  .logo img {
     width: 215px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
-    cursor: ; pointer;
+    cursor: pointer;
+    margin-bottom: 15px;
 }
 
 
