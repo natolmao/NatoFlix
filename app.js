@@ -81,7 +81,7 @@ async function searchMovies(query) {
     }
 }
 
-function displayMovies(movies, query) {
+async function displayMovies(movies, query) {
     const movieList = document.getElementById('trendingMovies');
     let hasResults = false; // Flag to check if there are results
 
@@ -89,40 +89,78 @@ function displayMovies(movies, query) {
 
     if (movies.length > 0) {
         hasResults = true; // Set flag if there are movies
-        movies.forEach(movie => {
+        for (const movie of movies) {
             const movieTile = document.createElement('div');
             movieTile.className = 'movie-tile';
+
+            // Extract the release year
+            const releaseYear = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+
+            // Fetch detailed movie info to get runtime
+            const detailedMovie = await fetchMovieDetails(movie.id);
+            const runtime = detailedMovie.runtime ? `${detailedMovie.runtime}m` : 'N/A'; // Use detailed movie runtime
+
             movieTile.innerHTML = `
                 <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
                 <h3>${movie.title}</h3>
+                <p>${releaseYear} • ${runtime}</p> <!-- Display release date and runtime -->
             `;
             movieTile.addEventListener('click', () => handleMovieClick(movie.id));
             movieList.appendChild(movieTile);
-        });
+        }
     }
 
-    return hasResults; // Return if there are movie results
+    return hasResults; // Return whether any movies were found
 }
 
-function displayTVShows(tvShows, query) {
-    const movieList = document.getElementById('trendingShows');
+async function fetchMovieDetails(movieId) {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching movie details:', error);
+        return {}; // Return an empty object on error
+    }
+}
+
+async function displayTVShows(tvShows, query) {
+    const tvShowList = document.getElementById('trendingShows');
     let hasResults = false; // Flag to check if there are results
+
+    tvShowList.innerHTML = ''; // Clear previous results
 
     if (tvShows.length > 0) {
         hasResults = true; // Set flag if there are TV shows
-        tvShows.forEach(tvShow => {
-            const tvTile = document.createElement('div');
-            tvTile.className = 'movie-tile';
-            tvTile.innerHTML = `
-                <img src="https://image.tmdb.org/t/p/w500${tvShow.poster_path}" alt="${tvShow.name}">
-                <h3>${tvShow.name}</h3>
+        for (const show of tvShows) {
+            const tvShowTile = document.createElement('div');
+            tvShowTile.className = 'movie-tile';
+
+            // Fetch detailed TV show info to get latest season and episode
+            const detailedShow = await fetchTVShowDetails(show.id);
+            const latestSeason = detailedShow.seasons && detailedShow.seasons.length > 0 ? `S${detailedShow.seasons.length}` : 'N/A';
+            const latestEpisode = detailedShow.seasons && detailedShow.seasons.length > 0 ? `E${detailedShow.seasons[detailedShow.seasons.length - 1].episode_count}` : 'N/A';
+
+            tvShowTile.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.name}">
+                <h3>${show.name}</h3>
+                <p>${latestSeason} • ${latestEpisode}</p> <!-- Display latest season and episode -->
             `;
-            tvTile.addEventListener('click', () => handleTVShowClick(tvShow.id));
-            movieList.appendChild(tvTile);
-        });
+            tvShowTile.addEventListener('click', () => handleTVShowClick(show.id));
+            tvShowList.appendChild(tvShowTile);
+        }
     }
 
-    return hasResults; // Return if there are TV show results
+    return hasResults; // Return whether any TV shows were found
+}
+
+async function fetchTVShowDetails(tvShowId) {
+    try {
+        const response = await fetch(`https://api.themoviedb.org/3/tv/${tvShowId}?api_key=${apiKey}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching TV show details:', error);
+        return {}; // Return an empty object on error
+    }
 }
 
 async function handleMovieClick(movieId) {
