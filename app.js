@@ -194,3 +194,18 @@ async function handleTVShowClick(tvShowId) {
         console.error('Error fetching IMDb ID for the TV show:', error);
     }
 }
+
+// Block any new tabs or windows being opened by JavaScript
+window.open = function() {
+    console.log('Blocked an attempt to open a new tab.');
+    return null;  // Prevent any new tabs or windows from opening
+};
+
+// Block any <a> links with target="_blank"
+document.querySelectorAll('a[target="_blank"]').forEach(function(link) {
+    link.removeAttribute('target');  // Remove target="_blank" to prevent new tab
+    link.addEventListener('click', function(event) {
+        event.preventDefault();  // Block default click behavior (new tab)
+        console.log('Blocked an attempt to open a new tab from a link.');
+    });
+});
