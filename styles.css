@@ -37,11 +37,13 @@ body {
 
 .trending-movies-head {
     text-align: center;
+    font-size: 1.5em;
     margin-bottom: 5px;
 }
 
 .trending-shows-head {
     text-align: center;
+    font-size: 1.5em;
     margin-bottom: 5px;
     margin-top: 50px;
 }
