@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nateflix - TV Show Player</title>
+    <link rel="icon" type="image/png" href="6C130690-71E8-4CA7-807D-215F34220B60.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        #infoContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #videoContainer iframe {
+            width: 1000px;
+            height: 500px;
+            border: none;
+	    margin-bottom: 20px;
+        }
+
+        #info h2 {
+            margin: 0;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .rating img {
+            width: 30px;
+            height: auto;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo" onclick="window.location.href='index.html'"><img src="914ACCD7-EEBB-4955-B6AF-8F179130153B.png" alt="Nateflix Logo"></div>
+    </div>
+    <div id="infoContainer">
+        <div id="videoContainer"></div>
+        <div id="info"></div>
+    </div>
+
+    <script>
+        const apiKey = '212011c'; // Replace with your OMDB API key
+
+        // Function to load TV show details and video player
+        async function loadTVShow(imdbID, updateHistory = true) {
+            const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${apiKey}`);
+            const data = await response.json();
+
+            if (data.Response === "True") {
+                const videoUrl = `https://vidsrc.net/embed/${imdbID}`;
+
+                // Display TV show info
+                const tomatoRating = data.Ratings.find(rating => rating.Source === 'Rotten Tomatoes')?.Value || 'N/A';
+                document.getElementById('info').innerHTML = `
+                    <h2>${data.Title} (${data.Year})</h2>
+                    <div class="rating">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" alt="Rotten Tomatoes">
+                        <span>${tomatoRating}</span>
+                    </div>
+                    <p>${data.Plot}</p>
+                `;
+
+                // Embed the video
+                document.getElementById('videoContainer').innerHTML = `<iframe src="${videoUrl}" allowfullscreen></iframe>`;
+
+                if (updateHistory) {
+                    history.pushState({ imdbID }, '', `?tv=${imdbID}`);
+                }
+            } else {
+                alert('TV Show not found');
+            }
+        }
+
+        // Function to get the IMDb ID from URL parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // On page load, fetch the TV show details based on IMDb ID from URL
+        document.addEventListener('DOMContentLoaded', () => {
+            const imdbID = getQueryParam('tv');
+            if (imdbID) {
+                loadTVShow(imdbID);
+            } else {
+                alert('No IMDb ID provided');
+            }
+        });
+    </script>
+</body>
+</html>
