@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nateflix - Watch Any TV Show or Movie for Free</title>
+    <title>Nateflix - Watch Any TV Show or Movie</title>
     <link rel="icon" type="image/png" href="6C130690-71E8-4CA7-807D-215F34220B60.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="logo" onclick="window.location.href='index.html'"><img src="914ACCD7-EEBB-4955-B6AF-8F179130153B.png" alt="Nateflix Logo"></div>
-        <input type="text" id="searchBar" placeholder="Search for movies or TV shows..." onkeyup="searchMoviesAndTVShows()" />
+	<input type="text" id="searchBar" placeholder="Search for movies or TV shows..." />
     </div>
 
-    <div class="trending-container">
-        <div class="movie-list" id="trendingMovies"></div>
-    </div>
+<div class="trending-container">
+    <h2 class="trending-movies-head" id="trendingMoviesHead">Trending Movies</h2>
+    <div class="movie-list" id="trendingMovies"></div>
+    <h2 class="trending-shows-head" id="trendingShowsHead">Trending TV Shows</h2>
+    <div class="movie-list" id="trendingShows"></div>
+</div>
 
     <div class="pagination" id="pagination"></div>
 
