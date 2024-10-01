@@ -17,6 +17,7 @@ body {
     width: 215px; /* Adjust the width as needed */
     height: auto; /* Maintain aspect ratio */
     cursor: ; pointer;
+    margin-bottom: 10px;
 }
 
 
