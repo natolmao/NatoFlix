@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# Redirect /home to index.html
+RewriteRule ^home/?$ index.html [L]
+
+# Redirect /tv-show/ to tv-show-player.html
+RewriteRule ^tv-show/?$ tv-show-player.html [L]
+
+# Redirect /movie/ to movie-player.html
+RewriteRule ^movie/?$ movie-player.html [L]
