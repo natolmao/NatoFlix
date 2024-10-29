@@ -6,14 +6,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add event listener for the search bar
     document.getElementById('searchBar').addEventListener('input', (event) => {
-        const query = event.target.value.trim();
-        if (query) {
-            searchMovies(query);
-        } else {
-            fetchTrendingMovies(); // Fetch trending movies when the search bar is empty
-	    fetchTrendingTVShows(); // Fetch trending TV shows on load
-        }
+    const query = event.target.value.trim();
+    if (query) {
+        filterButtons.style.display = 'flex'; // Show buttons when there's a search query
+        searchMovies(query); // Perform search
+    } else {
+        filterButtons.style.display = 'none'; // Hide buttons when query is empty
+        fetchTrendingMovies();
+        fetchTrendingTVShows();
+        
+         }
     });
+});
+
+// Elements for filter buttons
+const filterButtons = document.getElementById('filterButtons');
+const moviesButton = document.getElementById('moviesButton');
+const tvShowsButton = document.getElementById('tvShowsButton');
+
+// Event listeners for Movies and TV Shows buttons
+moviesButton.addEventListener('click', () => {
+    moviesButton.classList.add('active');
+    tvShowsButton.classList.remove('active');
+    document.getElementById('trendingMovies').style.display = 'flex';
+    document.getElementById('trendingShows').style.display = 'none';
+});
+
+tvShowsButton.addEventListener('click', () => {
+    tvShowsButton.classList.add('active');
+    moviesButton.classList.remove('active');
+    document.getElementById('trendingMovies').style.display = 'none';
+    document.getElementById('trendingShows').style.display = 'flex';
 });
 
 async function fetchTrendingMovies() {
@@ -60,10 +83,15 @@ async function searchMovies(query) {
             // Show the headings
             document.querySelector('.trending-movies-head').style.display = 'block';
             document.querySelector('.trending-shows-head').style.display = 'block';
+            // Hide filter buttons
+            filterButtons.style.display = 'none';
             return; // Exit the function early
         }
 
-        // Check if there are results
+        // Show filter buttons when there’s a search query
+        filterButtons.style.display = 'flex';
+
+        // Display search results
         const foundMovies = displayMovies(movieData.results);
         const foundTVShows = displayTVShows(tvData.results);
 
@@ -76,6 +104,12 @@ async function searchMovies(query) {
             movieList.innerHTML = `<p>No results found for the search "${query}".</p>`;
             showList.innerHTML = ''; // Clear TV show list
         }
+
+        // Default to showing movies
+        moviesButton.classList.add('active');
+        tvShowsButton.classList.remove('active');
+        movieList.style.display = 'flex';
+        showList.style.display = 'none';
     } catch (error) {
         console.error('Error searching movies and TV shows:', error);
     }
