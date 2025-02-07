@@ -5,7 +5,14 @@ body {
     margin: 0;
     padding: 0;
 }
-
+.banner {
+    display: block;
+    background: red;
+    padding: 10px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+}
 .container {
     width: 80%;
     margin: 0 auto;
