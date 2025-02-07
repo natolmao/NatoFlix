@@ -1,0 +1,129 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+.banner {
+    display: block;
+    background: red;
+    padding: 10px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+}
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px 20px 0px 20px;
+    text-align: center;
+}
+
+ .logo img {
+    width: 215px; /* Adjust the width as needed */
+    height: auto; /* Maintain aspect ratio */
+    cursor: ; pointer;
+    margin-bottom: 10px;
+}
+
+
+#searchBar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+#searchBar::placeholder {
+    color: #888;
+}
+
+.trending-movies-head {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.trending-shows-head {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    margin-top: 50px;
+}
+
+
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center tiles horizontally */
+}
+
+.movie-tile {
+    width: calc(18% - 20px); /* Each tile takes up 20% of the row, minus gap */
+    margin: 20px; /* Add margin for spacing */
+    cursor: pointer;
+    text-align: center;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+}
+
+.movie-tile:hover {
+    transform: scale(1.05);
+}
+
+.movie-tile img {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+}
+
+.movie-tile h3 {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.pagination {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .pagination button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            cursor: not-allowed;
+        }
+
+#filterButtons {
+    display: flex;
+    justify-content: center;
+    margin: 5px;
+}
+
+.filter-button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button.active {
+    background-color: #666;
+}
+
+.filter-button:hover {
+    background-color: #666;
+}
