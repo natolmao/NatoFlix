@@ -7,6 +7,9 @@ body {
 }
 .banner {
     display: block;
+    pointer-events: auto;
+    color: #ffffff; /* or any color you want */
+    text-decoration: underline;
     background: red;
     padding: 10px;
     text-align: center;
