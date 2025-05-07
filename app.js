@@ -228,10 +228,4 @@ async function handleTVShowClick(tvShowId) {
         console.error('Error fetching IMDb ID for the TV show:', error);
     }
 }
-
-// Block any new tabs or windows being opened by JavaScript
-window.open = function() {
-    console.log('Blocked an attempt to open a new tab.');
-    return null;  // Prevent any new tabs or windows from opening
-};
 });
