@@ -1,4 +1,4 @@
-const apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
+wconst apiKey = '355c7191de5cb3f569b2a6b34cc274bc'; // Replace with your TMDB API key
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchTrendingMovies();
@@ -227,5 +227,4 @@ async function handleTVShowClick(tvShowId) {
     } catch (error) {
         console.error('Error fetching IMDb ID for the TV show:', error);
     }
-}
-});
+};
